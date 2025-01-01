@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sourav Ghosh's Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow-x: hidden;
+            background: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.spitzer.caltech.edu%2Fimage%2Fssc2008-10a1-the-milky-way-galaxy&psig=AOvVaw1Tbk6xJwOWl_DSyoJRSLFw&ust=1735702150491000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPDHz8KI0YoDFQAAAAAdAAAAABAI') no-repeat center center;
+        }
+        .menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            z-index: 10;
+            border-radius: 0 0 0 10px;
+        }
+        .menu a {
+            color: white;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            font-size: 1rem;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #000, #0a0a23);
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            animation: fadeIn 2s;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        .interactive-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a23;
+        }
+        .interactive {
+            width: 45%;
+            height: 60%;
+            margin: 0 1rem;
+            background: #1c1c3b;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bbb;
+        }
+        .blocks-section {
+            display: flex;
+            overflow-x: auto;
+            height: 50vh;
+            background: #0a0a23;
+        }
+        .block {
+            flex: 0 0 auto;
+            width: 30%;
+            margin: 1rem;
+            background: #1c1c3b;
+            border-radius: 10px;
+            text-align: center;
+            color: #fff;
+            padding: 1rem;
+        }
+        .contact-form {
+            background: #0a0a23;
+            padding: 2rem;
+            text-align: center;
+        }
+        .contact-form input, .contact-form textarea, .contact-form button {
+            width: 80%;
+            margin: 0.5rem 0;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            background: #000;
+        }
+        
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.spitzer.caltech.edu%2Fimage%2Fssc2008-10a1-the-milky-way-galaxy&psig=AOvVaw1Tbk6xJwOWl_DSyoJRSLFw&ust=1735702150491000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPDHz8KI0YoDFQAAAAAdAAAAABAI') no-repeat center center;
+            background-size: cover;
+            z-index: -1;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="dynamic-bg"></div>
+    <div class="menu">
+        <a href="#hero">Home</a>
+        <a href="#interactive-section">Interactives</a>
+        <a href="#blocks-section">Projects</a>
+        <a href="#contact-form">Contact</a>
+    </div>
+    <div class="hero" id="hero">
+        <h1>Welcome to my page! I am Sourav, a graduate student at the Department of Aeronautics and Astronautics, The University of Tokyo!</h1>
+    </div>
+    <div class="interactive-section">
+        <div class="interactive"><embed src="https://eyes.nasa.gov/apps/solar-system/#/home" style="width:1000px; height: 500px;"></div>
+        <div class="interactive"><embed src="https://eyes.nasa.gov/apps/asteroids/#/home" style="width:1000px; height: 500px;"></div>
+    </div>
+    <div class="blocks-section">
+        <div class="block">Introduction Page</div>
+        <div class="block">Research Interests & Projects</div>
+        <div class="block">Gallery</div>
+    </div>
+    <div class="contact-form">
+        <h2>Contact Me</h2>
+        <form>
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" rows="5" required></textarea>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <div class="footer">&copy; Sourav Ghosh 2025, all rights reserved.</div>
+</body>
+</html>
