@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sourav - Portfolio (Enhanced)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    html, body { margin: 0; padding: 0; overflow: hidden; background: black; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg-canvas'), antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+    camera.position.set(0, 1, 15);
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(10, 10, 10);
+    scene.add(directionalLight);
+
+    // Starfield
+    const starsGeometry = new THREE.BufferGeometry();
+    const starVertices = [];
+    for (let i = 0; i < 15000; i++) {
+      const x = (Math.random() - 0.5) * 2000;
+      const y = (Math.random() - 0.5) * 2000;
+      const z = (Math.random() - 0.5) * 2000;
+      if (Math.sqrt(x * x + y * y + z * z) > 100) starVertices.push(x, y, z);
+    }
+    starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.7, opacity: 0.8 });
+    const stars = new THREE.Points(starsGeometry, starMaterial);
+    scene.add(stars);
+
+    // Saturn
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load('https://www.solarsystemscope.com/textures/download/2k/saturn.jpg', (saturnTexture) => {
+      saturnTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      const saturnMaterial = new THREE.MeshStandardMaterial({ map: saturnTexture, roughness: 0.8 });
+      const saturn = new THREE.Mesh(new THREE.SphereGeometry(6, 64, 64), saturnMaterial);
+      saturn.position.z = -20;
+      scene.add(saturn);
+
+      textureLoader.load('https://i.imgur.com/d3pZE4N.png', (ringTexture) => {
+        ringTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        const ring = new THREE.Mesh(
+          new THREE.RingGeometry(6.5, 11.5, 64),
+          new THREE.MeshBasicMaterial({ map: ringTexture, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+        );
+        ring.rotation.x = Math.PI / 2 + 0.2;
+        ring.position.copy(saturn.position);
+        scene.add(ring);
+      });
+    });
+
+    // Load Endurance model
+    const loader = new GLTFLoader();
+    loader.load('interstellar__endurance.glb', (gltf) => {
+      const endurance = gltf.scene;
+      endurance.scale.set(2, 2, 2);
+      endurance.position.set(0, 0, 5);
+      scene.add(endurance);
+    }, undefined, (error) => {
+      console.error('Error loading model:', error);
+    });
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      stars.rotation.y += 0.00005;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
