@@ -351,6 +351,20 @@
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
+    // --- FADE IN SECTIONS ON SCROLL ---
+    const sections = document.querySelectorAll('.section-container');
+    const observer = new IntersectionObserver((entries) =>{
+        entries.forEach(entry => {
+            if (entry.isIntersecting){
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {threshold: 0.1});
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
   </script>
 </body>
 </html>
