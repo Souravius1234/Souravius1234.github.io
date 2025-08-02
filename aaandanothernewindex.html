@@ -300,20 +300,26 @@
     // Saturn
     const textureLoader = new THREE.TextureLoader();
     const saturnTexture = textureLoader.load('images/2k_saturn.jpg');
-    const ringTexture = textureLoader.load('images/saturn_rings.png');
+    const ringTexture = textureLoader.load('images/Saturn_Rings.png');
 
     const saturn = new THREE.Mesh(
-      new THREE.SphereGeometry(6, 64, 64),
+      new THREE.SphereGeometry(64, 64, 64),
       new THREE.MeshStandardMaterial({ map: saturnTexture, roughness: 1 })
     );
-    saturn.position.set(-10, 0, -40);
+    saturn.position.set(-10, 0, -100);
     scene.add(saturn);
 
     const ring = new THREE.Mesh(
-      new THREE.RingGeometry(7, 12, 64),
-      new THREE.MeshBasicMaterial({ map: ringTexture, side: THREE.DoubleSide, transparent: true, opacity: 0.8 })
+      new THREE.RingGeometry(75, 125, 100),
+      new THREE.MeshBasicMaterial({ 
+        map: ringTexture, 
+        // color: 0xaaaaff,
+        side: THREE.DoubleSide, 
+        transparent: false, 
+        opacity: 1.0 })
     );
-    ring.rotation.x = Math.PI / 2;
+    ring.position.set(-10,0.01,-100)
+    ring.rotation.x = - (Math.PI) / 3;
     ring.position.copy(saturn.position);
     scene.add(ring);
 
@@ -330,8 +336,8 @@
         const t = document.body.getBoundingClientRect().top;
         model.rotation.y += 0.002;
         model.rotation.x = t * 0.0003;
-        model.position.y = t * 0.0015;
-        camera.position.z = 125 + t * 0.01;
+        // model.position.y = t * 0.0015;
+        // camera.position.z = 125 + t * 0.01;
       };
     });
 
