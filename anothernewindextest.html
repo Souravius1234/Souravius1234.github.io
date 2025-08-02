@@ -317,19 +317,37 @@
         const stars = new THREE.Points(starGeometry, starMaterial);
         scene.add(stars);
 
-        // 2. SATURN (Simplified for debugging)
-        const saturnGeometry = new THREE.SphereGeometry(6, 32, 32);
-        const saturnMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 }); // Bright yellow
+        // // 2. SATURN (Simplified for debugging)
+        // const saturnGeometry = new THREE.SphereGeometry(6, 32, 32);
+        // const saturnMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 }); // Bright yellow
+        // saturn = new THREE.Mesh(saturnGeometry, saturnMaterial);
+        // saturn.position.z = -20;
+        // scene.add(saturn);
+
+        // 2. SATURN
+        const textureLoader = new THREE.TextureLoader();
+        const saturnTexture = textureLoader.load('images/2k_saturn.jpg');
+        const saturnGeometry = new THREE.SphereGeometry(6, 64, 64);
+        const saturnMaterial = new THREE.MeshStandardMaterial({ map: saturnTexture, roughness: 0.9 });
         saturn = new THREE.Mesh(saturnGeometry, saturnMaterial);
         saturn.position.z = -20;
         scene.add(saturn);
 
         // 3. SATURN'S RINGS (Simplified for debugging)
-        const ringGeometry = new THREE.TorusGeometry(11, 2.5, 16, 100);
-        const ringMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0xff0000, // Bright red
-            side: THREE.DoubleSide 
-        });
+        // const ringGeometry = new THREE.TorusGeometry(11, 2.5, 16, 100);
+        // const ringMaterial = new THREE.MeshBasicMaterial({ 
+        //     color: 0xff0000, // Bright red
+        //     side: THREE.DoubleSide 
+        // });
+        // ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        // ring.rotation.x = Math.PI / 2 + 0.2;
+        // ring.position.copy(saturn.position);
+        // scene.add(ring);
+
+        // 3. SATURN'S RINGS
+        const ringTexture = textureLoader.load('2k_saturn_ring_alpha');
+        const ringGeometry = new THREE.TorusGeometry(11, 2.5, 2, 100);
+        const ringMaterial = new THREE.MeshBasicMaterial({ map: ringTexture, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
         ring = new THREE.Mesh(ringGeometry, ringMaterial);
         ring.rotation.x = Math.PI / 2 + 0.2;
         ring.position.copy(saturn.position);
@@ -341,6 +359,48 @@
         endurance = new THREE.Mesh(enduranceGeometry, enduranceMaterial);
         endurance.position.z = 5;
         scene.add(endurance);
+
+        // 5. ENDURANCE SPACECRAFT ANOTHER VERSION?
+        // import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        // const loader = new GLTFLoader();
+
+        // loader.load('models/interstellar__endurance.glb', (gltf) => {
+        // const enduranceModel = gltf.scene;
+        // enduranceModel.scale.set(1.5, 1.5, 1.5);
+        // enduranceModel.position.set(0, 0, 5);
+        // scene.add(enduranceModel);
+        // });
+        // for (let i = 0; i < moduleCount; i++) {
+        //     const angle = (i / moduleCount) * Math.PI * 2;
+        //     const module = new THREE.Mesh(moduleGeo, moduleMat);
+        //     const x = ringRadius * Math.cos(angle);
+        //     const z = ringRadius * Math.sin(angle);
+        //     module.position.set(x, 0, z);
+        //     module.lookAt(new THREE.Vector3(0,0,0));
+        //     endurance.add(module);
+        // }
+        // scene.add(endurance);
+        // endurance.position.z = 5;
+
+        // 4. ENDURANCE SPACECRAFT
+        
+        // endurance = new THREE.Group();
+        // const ringRadius = 3;
+        // const moduleCount = 12;
+        // const moduleGeo = new THREE.BoxGeometry(0.7, 0.4, 1.2);
+        // const moduleMat = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.4 });
+        // for (let i = 0; i < moduleCount; i++) {
+        //     const angle = (i / moduleCount) * Math.PI * 2;
+        //     const module = new THREE.Mesh(moduleGeo, moduleMat);
+        //     const x = ringRadius * Math.cos(angle);
+        //     const z = ringRadius * Math.sin(angle);
+        //     module.position.set(x, 0, z);
+        //     module.lookAt(new THREE.Vector3(0,0,0));
+        //     endurance.add(module);
+        // }
+        // scene.add(endurance);
+        // endurance.position.z = 5;
+        
 
         // 5. ENDURANCE SPACECRAFT ANOTHER VERSION?
         // import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
