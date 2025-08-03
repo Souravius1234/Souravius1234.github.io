@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sourav - Interstellar Portfolio</title>
+  <title>Sourav Ghosh</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Fonts -->
@@ -138,6 +138,22 @@
             align-items: center;
             z-index: 40; /* Below the close button but above other content */
         }
+
+        .glow-button {
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 0 20px rgba(255,255,255,0.8); }
+            100% { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        }
+
+        p {
+          text-align: justify;
+        }
+
     </style>
 </head>
 <body class="bg-black">
@@ -208,10 +224,17 @@
                         I am an Aerospace Engineer from India, currently a Graduate Student at the Intelligent Space Systems Laboratory, Department of Aeronautics and Astronautics at the University of Tokyo.
                         I designed this webpage taking inspiration from Interstellar, a movie which motivated me to this path towards exploring the cosmos. 
                         I study and do research in the areas of Space Debris Tracking, Propagation, and Risk Assessment in the Cislunar Region, Trajectory Design and Optimization, Mission Design and Operations, Embedded Systems, and Robotics. <br><br>
-                        I am not a web-designer, and have tried my best to improve this webpage. I am open to suggestions, so please don't hesitate to reach out to me via the contact form or via my socials! <br>
+                        I am not a web-designer, and have tried my best to improve this webpage. In fact, I made this website to kill some boredom, and also because I felt that my previous webpage wasn't looking that great. I am open to suggestions, so please don't hesitate to reach out to me via the contact form or via my socials! <br>
                         The code to this webpage is available on my Github. Please do drop by and take a look! <br>
-                        To know more about me, check out my <b>About Me</b> page! <br><br>
-                        <a href="About Me.html" class="button primary">About Me!</a> <!--Add a button here to guide to About Me page-->
+                        To know more about me, check out my <b>About Me</b> page! <br>
+
+                        <div class="flex justify-center mt-6">
+                        <button id="enter-btn" class="px-8 py-3 text-lg font-bold text-white border-2 border-white rounded-full transition hover:bg-white hover:text-black hover:shadow-xl glow-button">
+                            About Me!
+                        </button>
+                        </div>
+
+                        <!-- <a href="About Me.html" class="button primary">About Me!</a> Add a button here to guide to About Me page -->
                     </p>
                 </div>
             </section>
@@ -224,17 +247,22 @@
                     <div class="glass-card">
                         <h3 class="text-xl mb-2">Cislunar Space Traffic Management based on Operational Zones</h3>
                         <p class="text-gray-400 mb-4">A study on the use of Operational zones for traffic management in the cislunar region. Demonstrates the use of an optical system for tracking of objects in the region. Presented at ISTS 2025.</p>
-                        <a href="#" class="text-blue-400 hover:underline">View Publication &rarr;</a>
+                        <a href="pubs/istspaper.pdf" class="text-blue-400 hover:underline">View Publication &rarr;</a>
                     </div>
                      <!-- Placeholder for another research paper -->
                     <div class="glass-card">
                         <h3 class="text-xl mb-2">Characterization of Orbits in Cislunar Region for Space Traffic Management</h3>
                         <p class="text-gray-400 mb-4">Characterizing and Dividing regions in the Cislunar Space for Space Traffic Management based on Operational Zones. Presented at IAC 2024.</p>
-                        <a href="#" class="text-blue-400 hover:underline">View Publication &rarr;</a>
+                        <a href="pubs/iac1.pdf" class="text-blue-400 hover:underline">View Publication &rarr;</a>
                     </div>
                     <!--
                     <p text-align="center"><b>View More Research Work</b></p> Add a button to show more papers here
                     -->
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button id="enter-btn" class="px-8 py-3 text-lg font-bold text-white border-2 border-white rounded-full transition hover:bg-white hover:text-black hover:shadow-xl glow-button">
+                            View More
+                    </button>
                 </div>
             </section>
 
