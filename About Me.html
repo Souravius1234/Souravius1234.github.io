@@ -75,7 +75,30 @@
 </head>
 <body>
   <canvas id="bg-canvas"></canvas>
-
+    <!-- Header and Navigation Bar -->
+    <header class="site-header">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo added here, replacing the text -->
+            <a href="index.html">
+                <img src="images\SGlogodark.png" alt="Sourav Ghosh Logo" class="logo-style h-20">
+            </a>
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="text-gray-300 hover:text-white transition-colors">Home</a>
+                <a href="About Me.html" class="text-gray-300 hover:text-white transition-colors">About Me</a>
+                <a href="#research" class="text-gray-300 hover:text-white transition-colors">Research</a>
+                <a href="#projects" class="text-gray-300 hover:text-white transition-colors">Projects</a>
+                <a href="#contact" class="text-gray-300 hover:text-white transition-colors">Contact</a>
+                <a href="Docs/sourav_cv_2025 (1).pdf" class="text-gray-300 hover:text-white transition-colors">CV</a>
+            </nav>
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
   <header class="py-8 px-4 text-center">
     <h1 class="text-4xl md:text-6xl">About Me</h1>
     <p class="text-gray-300 mt-4 text-center">Welcome to my universe.</p>
