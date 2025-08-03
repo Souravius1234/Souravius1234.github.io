@@ -225,12 +225,14 @@
                         I designed this webpage taking inspiration from Interstellar, a movie which motivated me to this path towards exploring the cosmos. 
                         I study and do research in the areas of Space Debris Tracking, Propagation, and Risk Assessment in the Cislunar Region, Trajectory Design and Optimization, Mission Design and Operations, Embedded Systems, and Robotics. <br><br>
                         I am not a web-designer, and have tried my best to improve this webpage. In fact, I made this website to kill some boredom, and also because I felt that my previous webpage wasn't looking that great. I am open to suggestions, so please don't hesitate to reach out to me via the contact form or via my socials! <br>
-                        The code to this webpage is available on my Github. Please do drop by and take a look! <br>
+                        The code to this webpage is available on my <b>Github</b>. Please do drop by and take a look! <br>
                         To know more about me, check out my <b>About Me</b> page! <br>
 
                         <div class="flex justify-center mt-6">
                         <button id="enter-btn" class="px-8 py-3 text-lg font-bold text-white border-2 border-white rounded-full transition hover:bg-white hover:text-black hover:shadow-xl glow-button">
+                            <a href="About Me.html">
                             About Me!
+                            </a>
                         </button>
                         </div>
 
@@ -290,10 +292,35 @@
             <!-- <section class="section-container">
                 <embed src="https://eyes.nasa.gov/apps/solar-system/#/home" style="width:1000px; height: 500px;">
             </section> -->
+
+            <section id="contact-form" class="section-container">
+            <h2 class="text-3xl mb-6 text-center">Contact Me</h2>
+            <div class="glass-card max-w-2xl mx-auto">
+                <form action="https://formspree.io/f/movlnnna" method="POST" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-gray-300 mb-1">Your email</label>
+                    <input type="email" name="email" id="email" required
+                    class="w-full px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-semibold text-gray-300 mb-1">Your message</label>
+                    <textarea name="message" id="message" rows="4" required
+                    class="w-full px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 shadow-md glow-button">
+                    Send Message
+                    </button>
+                </div>
+                </form>
+            </div>
+            </section>
+
             
             <!-- Contact/Footer Section -->
             <footer id="contact" class="section-container text-center border-t border-gray-800">
-                <p class="mb-4">Get in touch:</p>
+                <p class="mb-4 text-center">Get in touch:</p>
                 <div class="flex justify-center space-x-6">
                     <a href="mailto:sg.souravghosh2002@gmail.com" class="text-gray-400 hover:text-white transition-colors">Email</a>
                     <a href="https://github.com/souravius1234" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
