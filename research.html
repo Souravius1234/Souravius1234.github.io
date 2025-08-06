@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Research - Sourav Ghosh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+
+  <!-- Import Maps for Three.js -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background-color: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100vh;
+    }
+    .section-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .section-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+        .glass-card {
+            background: rgba(10, 20, 40, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(100, 150, 255, 0.2);
+        }
+    a {
+      color: #60a5fa;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+<!-- Header and Navigation Bar -->
+    <header class="site-header">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo added here, replacing the text -->
+            <a href="index.html">
+                <img src="images\SGLogodark.png" alt="Sourav Ghosh Logo" class="logo-style h-20">
+            </a>
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-6 font-family:Inter">
+                <a href="index.html" class="text-gray-300 hover:text-white transition-colors">Home</a>
+                <a href="About Me.html" class="text-gray-300 hover:text-white transition-colors">About Me</a>
+                <a href="research.html" class="text-gray-300 hover:text-white transition-colors">Research</a>
+                <a href="#projects" class="text-gray-300 hover:text-white transition-colors">Projects</a>
+                <a href="#contact" class="text-gray-300 hover:text-white transition-colors">Contact</a>
+                <a href="Docs/sourav_cv_2025 (1).pdf" class="text-gray-300 hover:text-white transition-colors">CV</a>
+            </nav>
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+  <!-- Header -->
+  <header class="text-center py-10">
+    <h1 class="text-4xl md:text-5xl font-bold">Research Works</h1>
+    <p class="text-gray-400 mt-2">Explore some of my academic and technical contributions</p>
+  </header>
+
+      <!-- Mobile Navigation Menu (hidden by default) -->
+    <div id="mobile-menu" class="hidden mobile-nav">
+         <button id="mobile-menu-close-button" class="absolute top-5 right-5 text-white z-50">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <a href="#" class="block text-2xl py-4 text-gray-300 hover:text-white">Home</a>
+        <a href="#about" class="block text-2xl py-4 text-gray-300 hover:text-white">About Me</a>
+        <a href="#research" class="block text-2xl py-4 text-gray-300 hover:text-white">Research Works</a>
+        <a href="#projects" class="block text-2xl py-4 text-gray-300 hover:text-white">Projects</a>
+        <a href="#contact" class="block text-2xl py-4 text-gray-300 hover:text-white">Contact</a>
+    </div>
+
+  <!-- Research Section -->
+  <section class="section-container" id="research">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="glass-card">
+        <h3 class="text-xl mb-2">Cislunar Space Traffic Management based on Operational Zones</h3>
+        <p class="text-gray-400 mb-4">A study on the use of Operational zones for traffic management in the cislunar region. Demonstrates the use of an optical system for tracking of objects in the region. Presented at ISTS 2025.</p>
+        <a href="pubs/istspaper.pdf" class="text-blue-400 hover:underline">View Publication &rarr;</a>
+    </div>
+      <div class="glass-card">
+        <h3 class="text-xl mb-2">Characterization of Orbits in Cislunar Region for Space Traffic Management</h3>
+        <p class="text-gray-400 mb-4">Characterizing and Dividing regions in the Cislunar Space for Space Traffic Management based on Operational Zones. Presented at IAC 2024.</p>
+        <a href="pubs/iac1.pdf" class="text-blue-400 hover:underline">View Publication &rarr;</a>
+    </div>
+      <div class="glass-card">
+        <h2 class="text-2xl mb-2">Master's Thesis (Preview)</h2>
+        <p class="text-gray-300 mb-3 text-justify">
+          A preview of your thesis research. This project analyzes orbit determination around cislunar space using optical tracking and Kalman filtering.
+        </p>
+        <a href="#" target="_blank" class="hover:underline">View Draft &rarr;</a>
+      </div>
+      <div class="glass-card">
+        <h2 class="text-2xl mb-2">Collaborative Mission Study</h2>
+        <p class="text-gray-300 mb-3 text-justify">
+          Collaborative work with [lab/agency] on a proposed mission to the Earth-Moon Lagrange point using NRHO insertion and maneuver optimization.
+        </p>
+        <a href="#" target="_blank" class="hover:underline">More Info &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back Button -->
+  <div class="text-center mt-12 pb-12">
+    <a href="index.html" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
+      ⬅ Back to Home
+    </a>
+  </div>
+
+  <!-- Three.js Script for Stars -->
+  <script type="module">
+    import * as THREE from 'three';
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.position.z = 100;
+
+    const starGeometry = new THREE.BufferGeometry();
+    const starVertices = [];
+
+    for (let i = 0; i < 8000; i++) {
+      const x = (Math.random() - 0.5) * 2000;
+      const y = (Math.random() - 0.5) * 2000;
+      const z = (Math.random() - 0.5) * 2000;
+      if (Math.sqrt(x*x + y*y + z*z) > 100) {
+        starVertices.push(x, y, z);
+      }
+    }
+
+    starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 1, opacity: 0.7, transparent: true });
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      stars.rotation.y += 0.0004;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Fade-in effect on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.section-container').forEach(section => {
+      observer.observe(section);
+    });
+  </script>
+</body>
+</html>
