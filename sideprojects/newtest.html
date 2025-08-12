@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Solar Event Viewer</title>
+    <style>
+        /* Basic styles for the page */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden; /* Prevent scrollbars from appearing */
+        }
+
+        /* Container for the 3D canvas */
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: grab;
+        }
+        #container:active {
+            cursor: grabbing;
+        }
+
+        /* Header title */
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            margin: 0;
+            font-weight: 500;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        /* Styling for the control panel */
+        #controls {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            z-index: 10;
+            background: rgba(30, 30, 30, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #controls label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        #controls input, #controls select {
+            width: 180px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #222;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        /* Styling for the event information panel */
+        #info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            max-height: 45%;
+            background: rgba(30, 30, 30, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            z-index: 10;
+            display: none; /* Hidden by default */
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: opacity 0.3s;
+        }
+        #info-panel h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: #ffcc00;
+        }
+        #info-panel p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        #info-panel a {
+            color: #66bfff;
+            text-decoration: none;
+        }
+        #info-panel a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading indicator styles */
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ffcc00;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            z-index: 20;
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Main container for the 3D scene -->
+    <div id="container"></div>
+
+    <!-- Title -->
+    <h1>Interactive Solar Event Viewer</h1>
+
+    <!-- Controls for date and event type -->
+    <div id="controls">
+        <label for="date-picker">Select Date:</label>
+        <input type="date" id="date-picker">
+        <label for="event-type">Filter Events:</label>
+        <select id="event-type">
+            <option value="all">All Events</option>
+            <option value="flr">Solar Flares</option>
+            <option value="cme">Coronal Mass Ejections</option>
+            <option value="sep">Solar Energetic Particles</option>
+        </select>
+    </div>
+
+    <!-- Panel to display event details -->
+    <div id="info-panel">
+        <h2 id="info-title">Event Details</h2>
+        <div id="info-details"></div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loader"></div>
+
+    <!-- Three.js and OrbitControls libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // --- Global Variables ---
+        let scene, camera, renderer, controls;
+        let sun, eventMarkers = new THREE.Group();
+        let animatedMarkers = []; // For CMEs that need animation
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const API_KEY = 'DEMO_KEY'; // Using NASA's demo key
+        const clock = new THREE.Clock();
+
+        // --- Initialization ---
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 2.5;
+
+            const container = document.getElementById('container');
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const pointLight = new THREE.PointLight(0xffffff, 0.8);
+            pointLight.position.set(5, 3, 5);
+            scene.add(pointLight);
+
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 1.5;
+            controls.maxDistance = 10;
+
+            createSun();
+            createStars();
+            scene.add(eventMarkers);
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize, false);
+            container.addEventListener('click', onMouseClick, false);
+            document.getElementById('date-picker').addEventListener('change', fetchDataForDate);
+            document.getElementById('event-type').addEventListener('change', filterEvents);
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date-picker').value = today;
+            
+            fetchDataForDate();
+            animate();
+        }
+
+        // --- 3D Object Creation ---
+        function createSun() {
+            const textureLoader = new THREE.TextureLoader();
+            // A more realistic sun texture. Using a 2k texture for performance.
+            const sunTextureUrl = 'images/2k_sun.jpg';
+            textureLoader.load(sunTextureUrl, (texture) => {
+                const geometry = new THREE.SphereGeometry(1, 64, 64);
+                // The material makes the sun glow and appear fiery.
+                const material = new THREE.MeshStandardMaterial({
+                    map: texture,
+                    emissiveMap: texture,
+                    emissive: 0xffdd88,
+                    emissiveIntensity: 1.5,
+                    metalness: 0,
+                    roughness: 0.7
+                });
+                sun = new THREE.Mesh(geometry, material);
+                scene.add(sun);
+            }, undefined, (err) => {
+                console.error('An error occurred while loading the sun texture.', err);
+                const geometry = new THREE.SphereGeometry(1, 64, 64);
+                const material = new THREE.MeshStandardMaterial({ color: 0xffd700 });
+                sun = new THREE.Mesh(geometry, material);
+                scene.add(sun);
+            });
+        }
+        
+        function createStars() {
+            const starGeometry = new THREE.BufferGeometry();
+            const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.005 });
+            const starVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                const x = (Math.random() - 0.5) * 2000;
+                const y = (Math.random() - 0.5) * 2000;
+                const z = (Math.random() - 0.5) * 2000;
+                const dist = x*x + y*y + z*z;
+                if (dist < 10000) continue; // Avoid stars inside a certain radius
+                starVertices.push(x, y, z);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            const stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+        }
+
+        // --- Data Fetching and Processing ---
+        async function fetchDataForDate() {
+            const date = document.getElementById('date-picker').value;
+            if (!date) return;
+
+            document.getElementById('loader').style.display = 'block';
+            clearEventMarkers();
+
+            const startDate = date;
+            const endDate = date;
+
+            try {
+                const [flrResponse, cmeResponse, sepResponse] = await Promise.all([
+                    fetch(`https://api.nasa.gov/DONKI/FLR?startDate=${startDate}&endDate=${endDate}&api_key=${API_KEY}`),
+                    fetch(`https://api.nasa.gov/DONKI/CME?startDate=${startDate}&endDate=${endDate}&api_key=${API_KEY}`),
+                    fetch(`https://api.nasa.gov/DONKI/SEP?startDate=${startDate}&endDate=${endDate}&api_key=${API_KEY}`)
+                ]);
+
+                if (!flrResponse.ok || !cmeResponse.ok || !sepResponse.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const flrData = await flrResponse.json();
+                const cmeData = await cmeResponse.json();
+                const sepData = await sepResponse.json();
+
+                processEvents(flrData, 'flr');
+                processEvents(cmeData, 'cme');
+                processEvents(sepData, 'sep');
+                
+            } catch (error) {
+                console.error('Error fetching solar data:', error);
+                // Avoid using alert
+                const infoPanel = document.getElementById('info-panel');
+                document.getElementById('info-title').innerText = "Error";
+                document.getElementById('info-details').innerHTML = `<p>Failed to fetch solar data. The NASA API might be down or you've exceeded the rate limit for the DEMO_KEY. Please try again later.</p>`;
+                infoPanel.style.display = 'block';
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+                filterEvents();
+            }
+        }
+
+        function processEvents(events, type) {
+            if (!Array.isArray(events)) return;
+            events.forEach(event => {
+                let location = '';
+                // Extract location string from different event types
+                if (type === 'flr' && event.sourceLocation) {
+                    location = event.sourceLocation;
+                } else if (type === 'cme' && event.cmeAnalyses && event.cmeAnalyses[0] && event.cmeAnalyses[0].latitude !== undefined) {
+                    // Create a location string for CMEs if available
+                    const analysis = event.cmeAnalyses[0];
+                    location = `${analysis.latitude >= 0 ? 'N' : 'S'}${Math.abs(analysis.latitude)}${analysis.longitude >= 0 ? 'E' : 'W'}${Math.abs(analysis.longitude)}`;
+                } else if (type === 'sep' && event.linkedEvents) {
+                    // Try to find location from linked flare event
+                    const flareEvent = event.linkedEvents.find(le => le.activityID.includes('FLR'));
+                    if (flareEvent) {
+                        const flareId = flareEvent.activityID;
+                        const match = flareId.match(/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})-FLR-([NS]\d+[WE]\d+)/);
+                        if (match && match[2]) {
+                            location = match[2];
+                        }
+                    }
+                }
+
+                if (location) {
+                    const coords = parseLocation(location);
+                    if (coords) {
+                        createEventVisualization(coords.lat, coords.lon, type, event);
+                    }
+                }
+            });
+        }
+
+        function parseLocation(locationStr) {
+            const match = locationStr.match(/([NS])(\d+)([WE])(\d+)/);
+            if (match) {
+                let lat = parseInt(match[2], 10);
+                let lon = parseInt(match[4], 10);
+                if (match[1] === 'S') lat = -lat;
+                // In DONKI, longitude is from 0-360, but location string is E/W. E is negative for our mapping.
+                if (match[3] === 'E') lon = -lon; 
+                return { lat, lon };
+            }
+            return null;
+        }
+
+        function createEventVisualization(lat, lon, type, data) {
+            const group = new THREE.Group();
+            let marker;
+            
+            // Generate a different visualization for each event type
+            if (type === 'flr') {
+                const flareTexture = createFlareTexture();
+                const material = new THREE.SpriteMaterial({ map: flareTexture, color: 0xff8800, blending: THREE.AdditiveBlending });
+                marker = new THREE.Sprite(material);
+                marker.scale.set(0.1, 0.1, 1);
+                group.add(marker);
+            } else if (type === 'cme') {
+                const ringGeometry = new THREE.TorusGeometry(0.05, 0.005, 8, 50);
+                const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
+                marker = new THREE.Mesh(ringGeometry, ringMaterial);
+                marker.scale.set(0.1, 0.1, 0.1); // Start small
+                group.add(marker);
+                animatedMarkers.push({mesh: marker, type: 'cme', lifetime: 0});
+            } else if (type === 'sep') {
+                const haloTexture = createFlareTexture(); // Reuse flare texture for a halo effect
+                const material = new THREE.SpriteMaterial({ map: haloTexture, color: 0x00aaff, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+                marker = new THREE.Sprite(material);
+                marker.scale.set(0.15, 0.15, 1);
+                group.add(marker);
+                animatedMarkers.push({mesh: marker, type: 'sep', lifetime: 0});
+            }
+
+            // Convert lat/lon to 3D coordinates on the sphere
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
+            const radius = 1.02; // Slightly above the sun's surface
+
+            group.position.set(
+                -(radius * Math.sin(phi) * Math.cos(theta)),
+                radius * Math.cos(phi),
+                radius * Math.sin(phi) * Math.sin(theta)
+            );
+            
+            // Orient CMEs to erupt outwards from the surface
+            if (type === 'cme') {
+                group.lookAt(new THREE.Vector3(0,0,0));
+            }
+
+            group.userData = { type, data, isEvent: true };
+            eventMarkers.add(group);
+        }
+
+        function createFlareTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 128;
+            const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(
+                canvas.width / 2, canvas.height / 2, 0,
+                canvas.width / 2, canvas.height / 2, canvas.width / 2
+            );
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.2, 'rgba(255,255,200,1)');
+            gradient.addColorStop(0.4, 'rgba(255,200,0,0.5)');
+            gradient.addColorStop(1, 'rgba(255,150,0,0)');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function clearEventMarkers() {
+            while (eventMarkers.children.length > 0) {
+                eventMarkers.remove(eventMarkers.children[0]);
+            }
+            animatedMarkers = [];
+            document.getElementById('info-panel').style.display = 'none';
+        }
+
+        // --- Interactivity and UI ---
+        function filterEvents() {
+            const filter = document.getElementById('event-type').value;
+            eventMarkers.children.forEach(markerGroup => {
+                if (filter === 'all') {
+                    markerGroup.visible = true;
+                } else {
+                    markerGroup.visible = markerGroup.userData.type === filter;
+                }
+            });
+        }
+
+        function onMouseClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(eventMarkers.children, true);
+
+            if (intersects.length > 0) {
+                let eventGroup = intersects[0].object;
+                // Traverse up to find the main group with the data
+                while (eventGroup.parent && !eventGroup.userData.isEvent) {
+                    eventGroup = eventGroup.parent;
+                }
+                
+                if (eventGroup.userData.isEvent) {
+                    displayEventInfo(eventGroup.userData.data, eventGroup.userData.type);
+                }
+            } else {
+                 document.getElementById('info-panel').style.display = 'none';
+            }
+        }
+
+        function displayEventInfo(data, type) {
+            const infoPanel = document.getElementById('info-panel');
+            const titleEl = document.getElementById('info-title');
+            const detailsEl = document.getElementById('info-details');
+            let detailsHtml = '';
+
+            if (type === 'flr') {
+                titleEl.textContent = `Solar Flare: ${data.classType}`;
+                detailsHtml = `<p><strong>Time:</strong> ${new Date(data.beginTime).toUTCString()}</p>
+                               <p><strong>Peak:</strong> ${new Date(data.peakTime).toUTCString()}</p>
+                               <p><strong>Location:</strong> ${data.sourceLocation}</p>`;
+            } else if (type === 'cme') {
+                titleEl.textContent = 'Coronal Mass Ejection';
+                const analysis = data.cmeAnalyses && data.cmeAnalyses[0] ? data.cmeAnalyses[0] : {};
+                detailsHtml = `<p><strong>Time:</strong> ${new Date(data.startTime).toUTCString()}</p>
+                               <p><strong>Speed:</strong> ${analysis.speed ? analysis.speed + ' km/s' : 'N/A'}</p>
+                               <p><strong>Type:</strong> ${analysis.type || 'N/A'}</p>
+                               <p><a href="${data.link}" target="_blank" rel="noopener noreferrer">More Info on DONKI</a></p>`;
+            } else if (type === 'sep') {
+                titleEl.textContent = `Solar Energetic Particle Event`;
+                const instruments = data.instruments.map(i => i.displayName).join(', ');
+                detailsHtml = `<p><strong>Time:</strong> ${new Date(data.eventTime).toUTCString()}</p>
+                               <p><strong>Instruments:</strong> ${instruments}</p>
+                               <p><a href="${data.link}" target="_blank" rel="noopener noreferrer">More Info on DONKI</a></p>`;
+            }
+
+            detailsEl.innerHTML = detailsHtml;
+            infoPanel.style.display = 'block';
+        }
+
+        // --- Core Loop and Event Handlers ---
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            
+            controls.update();
+            if (sun) sun.rotation.y += 0.0005; // Slow rotation
+
+            // Animate markers
+            const time = clock.getElapsedTime();
+            animatedMarkers.forEach(markerData => {
+                markerData.lifetime += delta;
+                if (markerData.type === 'cme') {
+                    const scale = 0.1 + markerData.lifetime * 2;
+                    markerData.mesh.scale.set(scale, scale, scale);
+                    markerData.mesh.material.opacity = Math.max(0, 0.8 - markerData.lifetime * 1.5);
+                } else if (markerData.type === 'sep' || markerData.type === 'flr') {
+                    // Pulsating effect for flares and SEPs
+                    const scale = 0.1 + Math.sin(time * 5 + markerData.mesh.position.x) * 0.02;
+                    markerData.mesh.scale.set(scale, scale, 1);
+                }
+            });
+            // Remove dead markers
+            animatedMarkers = animatedMarkers.filter(m => m.mesh.material.opacity > 0);
+
+            renderer.render(scene, camera);
+        }
+
+        // --- Start the application ---
+        init();
+    </script>
+</body>
+</html>
