@@ -7,27 +7,33 @@ Static portfolio and research website published through GitHub Pages at `souravi
 - Static HTML
 - Tailwind CSS through CDN
 - Three.js ES modules through CDN
+- Shared vanilla JavaScript web components
 - GitHub Pages deployment from `main`
 
-No build step is currently required.
+No build step is required.
 
 ## Repository map
 
 ```text
 .
-├── index.html                  # Landing page
-├── About Me.html               # Current about page; retained for URL compatibility
+├── index.html                  # Custom landing page and Three.js hero
+├── about.html                  # Canonical about page
+├── About Me.html               # Compatibility redirect to about.html
 ├── research.html               # Research catalogue
 ├── projects.html               # Project catalogue
-├── contact.html                # Contact page
-├── assets/                     # Legacy template CSS, JavaScript, fonts, and Sass
-├── images/                     # Shared site imagery and logos
+├── contact.html                # Contact form and contact links
+├── assets/
+│   ├── css/site.css            # Shared site styles
+│   ├── js/site.js              # Shared navigation, footer, and reveal behavior
+│   ├── js/starfield.js         # Reusable Three.js starfield
+│   └── ...                     # Retained legacy template assets
+├── images/                     # Shared imagery and logos
 ├── models/                     # 3D model assets
 ├── Docs/                       # CV and downloadable documents
 ├── pubs/                       # Publication PDFs
 ├── projects/                   # Detailed project pages
 ├── sideprojects/               # Standalone side-project pages
-├── research/                   # Interactive research companions and research-specific data
+├── research/                   # Interactive research companions and project data
 ├── docs/                       # Repository and development documentation
 └── archive/                    # Retired pages and legacy material
 ```
@@ -50,20 +56,22 @@ http://localhost:8000/
 
 ## Development rules
 
-- Keep the root limited to public top-level pages and repository metadata.
+- Keep the repository root limited to public top-level pages and repository metadata.
 - Put detailed project pages under `projects/`.
 - Put interactive paper companions under `research/<project-slug>/`.
+- Put shared behavior and styling under `assets/`.
 - Put shared images in `images/`; keep project-specific assets inside their project directory.
 - Use forward slashes in HTML paths, including on Windows.
-- Preserve existing public URLs until redirects or compatibility pages are provided.
-- Do not commit generated scientific datasets unless they are compressed and required by the published interactive page.
+- Preserve existing public URLs with compatibility redirects when filenames change.
+- Do not commit large generated scientific datasets unless they are compressed and required by a published interactive page.
+- Use the shared `<site-header>` and `<site-footer>` components on standard content pages.
 
 ## Current research companion
 
-The photometry-aware cislunar surveillance explorer will be developed under:
+The photometry-aware cislunar surveillance explorer is located at:
 
 ```text
 research/photometry-aware-cssa/
 ```
 
-Its data-export contract and implementation notes will remain inside that directory.
+The permanent route already exists. Three.js scene implementation and scientific data integration will be developed there.
