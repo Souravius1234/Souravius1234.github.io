@@ -10,6 +10,19 @@ const loadText = async (path) => {
   return response.text();
 };
 
+const loadTrajectoryPart = async (part, metadataUrl) => {
+  const primaryUrl = new URL(part, metadataUrl);
+  try {
+    return await loadText(primaryUrl.href);
+  } catch (error) {
+    const missingLegacyName = /observer-delta-01\.txt$/i.test(primaryUrl.pathname);
+    if (!missingLegacyName) throw error;
+
+    const fallbackUrl = new URL('./observer-positions-01.txt', metadataUrl);
+    return loadText(fallbackUrl.href);
+  }
+};
+
 const base64ToBytes = (base64) => {
   const binary = atob(base64.replace(/\s+/g, ''));
   const bytes = new Uint8Array(binary.length);
@@ -83,7 +96,7 @@ export const loadObserverDataset = async (descriptor) => {
   }
 
   const encodedParts = await Promise.all(
-    payload.positionParts.map((part) => loadText(new URL(part, metadataUrl).href))
+    payload.positionParts.map((part) => loadTrajectoryPart(part, metadataUrl))
   );
   const values = await decodePackedPositions(payload, encodedParts.join(''));
   const stride = payload.samplesPerObserver * payload.componentsPerSample;
