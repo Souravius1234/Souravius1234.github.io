@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { EM_SYSTEM, DISPLAY } from './constants.js';
 import { computeLagrangePoints } from './lagrange.js';
+import { createGridLayer } from './grid-layer.js';
+import { ObserverLayer } from './observer-layer.js';
 
 const makeLabel = (text, color = '#ffffff') => {
   const canvas = document.createElement('canvas');
@@ -56,6 +58,7 @@ export class CSSAScene {
     this.canvas = canvas;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x02050c);
+    this.observerLayer = null;
 
     this.camera = new THREE.PerspectiveCamera(46, 1, 0.001, 40);
     this.camera.position.set(0.45, -3.7, 3.0);
@@ -75,7 +78,10 @@ export class CSSAScene {
       axes: new THREE.Group(),
       lagrange: new THREE.Group(),
       xgeo: new THREE.Group(),
-      primaries: new THREE.Group()
+      primaries: new THREE.Group(),
+      zones: new THREE.Group(),
+      grid: new THREE.Group(),
+      observers: new THREE.Group()
     };
 
     Object.values(this.layers).forEach((group) => this.scene.add(group));
@@ -119,17 +125,14 @@ export class CSSAScene {
     this.layers.primaries.add(baryLabel);
 
     const axisLength = 4.5;
-    const xMaterial = new THREE.LineBasicMaterial({ color: 0xe57373, transparent: true, opacity: 0.7 });
-    const yMaterial = new THREE.LineBasicMaterial({ color: 0x81c784, transparent: true, opacity: 0.7 });
-    const zMaterial = new THREE.LineBasicMaterial({ color: 0x64b5f6, transparent: true, opacity: 0.7 });
-    const axis = (start, end, material) => new THREE.Line(
+    const axis = (start, end, color) => new THREE.Line(
       new THREE.BufferGeometry().setFromPoints([start, end]),
-      material
+      new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.7 })
     );
     this.layers.axes.add(
-      axis(new THREE.Vector3(-axisLength, 0, 0), new THREE.Vector3(axisLength, 0, 0), xMaterial),
-      axis(new THREE.Vector3(0, -axisLength, 0), new THREE.Vector3(0, axisLength, 0), yMaterial),
-      axis(new THREE.Vector3(0, 0, -axisLength), new THREE.Vector3(0, 0, axisLength), zMaterial)
+      axis(new THREE.Vector3(-axisLength, 0, 0), new THREE.Vector3(axisLength, 0, 0), 0xe57373),
+      axis(new THREE.Vector3(0, -axisLength, 0), new THREE.Vector3(0, axisLength, 0), 0x81c784),
+      axis(new THREE.Vector3(0, 0, -axisLength), new THREE.Vector3(0, 0, axisLength), 0x64b5f6)
     );
 
     const xgeoMaterial = new THREE.LineBasicMaterial({ color: 0x66d9ff, transparent: true, opacity: 0.85 });
@@ -153,15 +156,54 @@ export class CSSAScene {
       this.layers.lagrange.add(label);
     });
 
-    const grid = new THREE.GridHelper(8, 32, 0x36506f, 0x17263b);
-    grid.rotation.x = Math.PI / 2;
-    grid.material.transparent = true;
-    grid.material.opacity = 0.32;
-    this.scene.add(grid);
+    const referenceGrid = new THREE.GridHelper(8, 32, 0x36506f, 0x17263b);
+    referenceGrid.rotation.x = Math.PI / 2;
+    referenceGrid.material.transparent = true;
+    referenceGrid.material.opacity = 0.2;
+    this.scene.add(referenceGrid);
+  }
+
+  loadStudyData(grid, observers) {
+    this.layers.grid.clear();
+    this.layers.zones.clear();
+    this.layers.observers.clear();
+
+    this.layers.grid.add(createGridLayer(grid));
+
+    const earth = new THREE.Vector3(-EM_SYSTEM.mu, 0, 0);
+    const moon = new THREE.Vector3(1 - EM_SYSTEM.mu, 0, 0);
+    grid.zones.filter((zone) => Number.isFinite(zone.radiusLU)).forEach((zone) => {
+      const material = new THREE.LineDashedMaterial({
+        color: zone.color,
+        transparent: true,
+        opacity: 0.9,
+        dashSize: 0.035,
+        gapSize: 0.02
+      });
+      const circle = makeCircle(zone.radiusLU, 180, material);
+      circle.position.copy(zone.center === 'moon' ? moon : earth);
+      circle.computeLineDistances();
+      this.layers.zones.add(circle);
+    });
+
+    this.observerLayer = new ObserverLayer(observers);
+    this.layers.observers.add(this.observerLayer.root);
+    this.setTimeIndex(0);
   }
 
   setLayerVisibility(layer, visible) {
-    if (this.layers[layer]) this.layers[layer].visible = visible;
+    if (layer === 'trajectories') this.observerLayer?.setTrajectoriesVisible(visible);
+    else if (layer === 'markers') this.observerLayer?.setMarkersVisible(visible);
+    else if (this.layers[layer]) this.layers[layer].visible = visible;
+  }
+
+  setObserverFamily(family) {
+    this.observerLayer?.setFamilyFilter(family);
+    return this.observerLayer?.countForFamily(family) ?? 0;
+  }
+
+  setTimeIndex(index) {
+    this.observerLayer?.setTimeIndex(index);
   }
 
   resetView() {
