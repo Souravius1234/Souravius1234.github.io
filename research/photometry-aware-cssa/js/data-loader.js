@@ -10,17 +10,11 @@ const loadText = async (path) => {
   return response.text();
 };
 
-const loadTrajectoryPart = async (part, metadataUrl) => {
-  const primaryUrl = new URL(part, metadataUrl);
-  try {
-    return await loadText(primaryUrl.href);
-  } catch (error) {
-    const missingLegacyName = /observer-delta-01\.txt$/i.test(primaryUrl.pathname);
-    if (!missingLegacyName) throw error;
-
-    const fallbackUrl = new URL('./observer-positions-01.txt', metadataUrl);
-    return loadText(fallbackUrl.href);
-  }
+const loadTrajectoryPart = (part, metadataUrl) => {
+  const resolvedPart = /observer-delta-01\.txt$/i.test(part)
+    ? './observer-positions-01.txt'
+    : part;
+  return loadText(new URL(resolvedPart, metadataUrl).href);
 };
 
 const base64ToBytes = (base64) => {
