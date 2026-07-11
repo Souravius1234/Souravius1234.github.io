@@ -1,0 +1,34 @@
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local development
+node_modules/
+.npm/
+.cache/
+dist/
+build/
+
+# Python helper scripts
+__pycache__/
+*.py[cod]
+.venv/
+
+# Generated research data
+research/**/data/generated/
+research/**/data/cache/
+research/**/data/*.mat
+research/**/data/*.csv
+research/**/data/*.npy
+research/**/data/*.npz
+
+# Temporary exports
+*.tmp
+*.log
