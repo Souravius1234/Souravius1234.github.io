@@ -26,27 +26,32 @@
       <div class="scene-overlay">
         <span class="frame-badge" id="frame-name">Earth-Moon synodic barycentric</span>
         <h1>Photometry-Aware Sensor Placement for Cislunar SSA</h1>
-        <p>Physical scene shell using the Earth-Moon CR3BP mass parameter and the paper's Earth-centered XGEO domain radius.</p>
+        <p>JPL-seeded Earth-Moon CR3BP observer trajectories and the paper's 4,782-cell XGEO surveillance domain.</p>
       </div>
     </section>
 
     <aside class="control-panel" aria-label="Explorer controls">
       <section class="panel-section">
         <h3>Scene layers</h3>
-        <label class="control-row" for="toggle-axes">
-          <span>Rotating-frame axes</span>
-          <input id="toggle-axes" type="checkbox" checked>
-        </label>
-        <label class="control-row" for="toggle-lagrange">
-          <span>Lagrange points</span>
-          <input id="toggle-lagrange" type="checkbox" checked>
-        </label>
-        <label class="control-row" for="toggle-xgeo">
-          <span>XGEO boundary</span>
-          <input id="toggle-xgeo" type="checkbox" checked>
-        </label>
+        <label class="control-row" for="toggle-axes"><span>Rotating-frame axes</span><input id="toggle-axes" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-lagrange"><span>Lagrange points</span><input id="toggle-lagrange" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-xgeo"><span>XGEO boundary</span><input id="toggle-xgeo" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-zones"><span>Macro-zone boundaries</span><input id="toggle-zones" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-grid"><span>Surveillance grid</span><input id="toggle-grid" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-trajectories"><span>Observer trajectories</span><input id="toggle-trajectories" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-markers"><span>Observer markers</span><input id="toggle-markers" type="checkbox" checked></label>
         <button class="control-button" id="planar-view" type="button">Planar view</button>
         <button class="control-button" id="reset-view" type="button">Reset perspective</button>
+      </section>
+
+      <section class="panel-section">
+        <h3>Observer library</h3>
+        <label class="field-label" for="family-filter">Orbit family</label>
+        <select id="family-filter" class="control-select" disabled>
+          <option value="all">All families</option>
+        </select>
+        <p id="family-count" class="data-status">Loading observer slots…</p>
+        <div id="family-legend" class="family-legend" aria-label="Orbit family legend"></div>
       </section>
 
       <section class="panel-section">
@@ -60,20 +65,29 @@
       </section>
 
       <section class="panel-section">
+        <h3>Domain cells</h3>
+        <div class="zone-list">
+          <span><i class="zone-dot earth"></i>Earth Local <strong id="zone-earth-count">—</strong></span>
+          <span><i class="zone-dot moon"></i>Lunar Local <strong id="zone-moon-count">—</strong></span>
+          <span><i class="zone-dot cislunar"></i>Cislunar Domain <strong id="zone-cislunar-count">—</strong></span>
+        </div>
+      </section>
+
+      <section class="panel-section">
         <h3>Scientific data</h3>
-        <p id="data-status" class="data-status">Loading manifest…</p>
+        <p id="data-status" class="data-status">Loading manifest and trajectory payload…</p>
       </section>
 
       <section class="panel-section">
         <h3>Current scope</h3>
-        <p class="data-status">Earth and Moon, barycenter, rotating axes, numerically solved L1–L3, analytic L4–L5, and the 1.5 million km XGEO boundary are active. No invented observer or coverage data are displayed.</p>
+        <p class="data-status">This release visualizes the real 64-slot observer library and exact domain grid. Photometric coverage tensors and optimized constellation selections are the next integration stage.</p>
       </section>
     </aside>
 
     <section class="timeline-panel" aria-label="Time controls">
-      <button class="control-button primary play-button" type="button" disabled>Play</button>
-      <input type="range" min="0" max="72" value="0" disabled aria-label="Time sample">
-      <span class="timeline-label">Dataset pending</span>
+      <button id="play-toggle" class="control-button primary play-button" type="button" disabled>Play</button>
+      <input id="time-slider" type="range" min="0" max="72" value="0" disabled aria-label="Time sample">
+      <span id="timeline-label" class="timeline-label">Loading trajectory dataset</span>
     </section>
   </main>
 
