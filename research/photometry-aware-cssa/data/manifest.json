@@ -59,7 +59,7 @@
   "datasets": {
     "observerTrajectories": {
       "status": "available",
-      "file": "./data/observers-packed.json"
+      "metadata": "./data/observer-meta.json"
     },
     "grid": {
       "status": "available",
