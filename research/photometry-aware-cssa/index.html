@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive companion for photometry-aware cislunar sensor placement research.">
+  <title>Photometry-Aware CSSA Explorer | Sourav Ghosh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js"}}</script>
+  <script type="module" src="../../assets/js/site.js"></script>
+</head>
+<body>
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <site-header root="../.." current="research"></site-header>
+
+  <main class="page-shell">
+    <section class="page-hero">
+      <h1>Photometry-Aware Cislunar Surveillance</h1>
+      <p>Interactive companion for the CLAP-calibrated cislunar observer-placement study.</p>
+    </section>
+
+    <section class="section-container">
+      <div class="glass-card">
+        <h2 class="section-title">Explorer Under Construction</h2>
+        <p>This page is now the permanent location for the Three.js research explorer. The next implementation stage will add the Earth–Moon rotating-frame scene, observer trajectories, surveillance grid, time controls, and optimized photometric coverage results.</p>
+        <div class="tag-list">
+          <span class="tag">Three.js</span>
+          <span class="tag">CLAP</span>
+          <span class="tag">CR3BP</span>
+          <span class="tag">MILP</span>
+        </div>
+        <div class="button-row">
+          <a class="button" href="../../research.html">Back to research</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <site-footer></site-footer>
+  <script type="module" src="../../assets/js/starfield.js"></script>
+</body>
+</html>
