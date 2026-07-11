@@ -6,6 +6,14 @@ const loadJSON = async (path) => {
   return response.json();
 };
 
+const loadText = async (path) => {
+  const response = await fetch(path, { cache: 'no-store' });
+  if (!response.ok) {
+    throw new Error(`Failed to load ${path}: ${response.status} ${response.statusText}`);
+  }
+  return response.text();
+};
+
 const decodeBytes = (base64) => {
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
@@ -13,8 +21,8 @@ const decodeBytes = (base64) => {
   return bytes;
 };
 
-const decodePackedPositions = (payload) => {
-  const bytes = decodeBytes(payload.positionsBase64);
+const decodePackedPositions = (payload, base64) => {
+  const bytes = decodeBytes(base64);
   if (payload.encoding !== 'int16-le-base64') {
     throw new Error(`Unsupported observer encoding: ${payload.encoding}`);
   }
@@ -33,9 +41,13 @@ const distance = (x, y, z, center) => Math.hypot(x - center[0], y - center[1], z
 export const loadManifest = () => loadJSON('./data/manifest.json');
 
 export const loadObserverDataset = async (descriptor) => {
-  if (!descriptor?.file) throw new Error('Observer dataset descriptor is missing its file path.');
-  const payload = await loadJSON(new URL(descriptor.file, window.location.href).href);
-  const values = decodePackedPositions(payload);
+  if (!descriptor?.metadata) throw new Error('Observer dataset descriptor is missing its metadata path.');
+  const metadataUrl = new URL(descriptor.metadata, window.location.href);
+  const payload = await loadJSON(metadataUrl.href);
+  const encodedParts = await Promise.all(
+    payload.positionParts.map((part) => loadText(new URL(part, metadataUrl).href))
+  );
+  const values = decodePackedPositions(payload, encodedParts.join('').trim());
   const stride = payload.samplesPerObserver * payload.componentsPerSample;
   const expected = payload.observers.length * stride;
   if (values.length !== expected) {
@@ -52,8 +64,7 @@ export const loadObserverDataset = async (descriptor) => {
     throw new Error(`Loaded ${observers.length} observers; expected ${payload.observerCount}.`);
   }
 
-  const { positionsBase64, ...dataset } = payload;
-  return { ...dataset, observers };
+  return { ...payload, observers };
 };
 
 export const buildGridDataset = (manifest) => {
