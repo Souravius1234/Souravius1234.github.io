@@ -5,39 +5,92 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Interactive companion for photometry-aware cislunar sensor placement research.">
   <title>Photometry-Aware CSSA Explorer | Sourav Ghosh</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../../assets/css/site.css">
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js"}}</script>
+  <link rel="stylesheet" href="./css/explorer.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+      "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/"
+    }
+  }
+  </script>
   <script type="module" src="../../assets/js/site.js"></script>
 </head>
-<body>
-  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+<body class="explorer-body">
   <site-header root="../.." current="research"></site-header>
 
-  <main class="page-shell">
-    <section class="page-hero">
-      <h1>Photometry-Aware Cislunar Surveillance</h1>
-      <p>Interactive companion for the CLAP-calibrated cislunar observer-placement study.</p>
+  <main class="explorer-shell">
+    <section class="viewport-panel" aria-label="Earth-Moon cislunar visualization">
+      <canvas id="scene-canvas"></canvas>
+      <div class="scene-overlay">
+        <span class="frame-badge" id="frame-name">Earth-Moon synodic barycentric</span>
+        <h1>Photometry-Aware Sensor Placement for Cislunar SSA</h1>
+        <p>JPL-seeded Earth-Moon CR3BP observer trajectories and the paper's 4,782-cell XGEO surveillance domain.</p>
+      </div>
     </section>
 
-    <section class="section-container">
-      <div class="glass-card">
-        <h2 class="section-title">Explorer Under Construction</h2>
-        <p>This page is now the permanent location for the Three.js research explorer. The next implementation stage will add the Earth–Moon rotating-frame scene, observer trajectories, surveillance grid, time controls, and optimized photometric coverage results.</p>
-        <div class="tag-list">
-          <span class="tag">Three.js</span>
-          <span class="tag">CLAP</span>
-          <span class="tag">CR3BP</span>
-          <span class="tag">MILP</span>
+    <aside class="control-panel" aria-label="Explorer controls">
+      <section class="panel-section">
+        <h3>Scene layers</h3>
+        <label class="control-row" for="toggle-axes"><span>Rotating-frame axes</span><input id="toggle-axes" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-lagrange"><span>Lagrange points</span><input id="toggle-lagrange" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-xgeo"><span>XGEO boundary</span><input id="toggle-xgeo" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-zones"><span>Macro-zone boundaries</span><input id="toggle-zones" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-grid"><span>Surveillance grid</span><input id="toggle-grid" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-trajectories"><span>Observer trajectories</span><input id="toggle-trajectories" type="checkbox" checked></label>
+        <label class="control-row" for="toggle-markers"><span>Observer markers</span><input id="toggle-markers" type="checkbox" checked></label>
+        <button class="control-button" id="planar-view" type="button">Planar view</button>
+        <button class="control-button" id="reset-view" type="button">Reset perspective</button>
+      </section>
+
+      <section class="panel-section">
+        <h3>Observer library</h3>
+        <label class="field-label" for="family-filter">Orbit family</label>
+        <select id="family-filter" class="control-select" disabled>
+          <option value="all">All families</option>
+        </select>
+        <p id="family-count" class="data-status">Loading observer slots…</p>
+        <div id="family-legend" class="family-legend" aria-label="Orbit family legend"></div>
+      </section>
+
+      <section class="panel-section">
+        <h3>Study dimensions</h3>
+        <div class="metric-grid">
+          <div class="metric"><strong id="metric-observers">—</strong><span>candidate observers</span></div>
+          <div class="metric"><strong id="metric-cells">—</strong><span>grid cells</span></div>
+          <div class="metric"><strong id="metric-times">—</strong><span>time samples</span></div>
+          <div class="metric"><strong id="metric-entries">—</strong><span>design entries</span></div>
         </div>
-        <div class="button-row">
-          <a class="button" href="../../research.html">Back to research</a>
+      </section>
+
+      <section class="panel-section">
+        <h3>Domain cells</h3>
+        <div class="zone-list">
+          <span><i class="zone-dot earth"></i>Earth Local <strong id="zone-earth-count">—</strong></span>
+          <span><i class="zone-dot moon"></i>Lunar Local <strong id="zone-moon-count">—</strong></span>
+          <span><i class="zone-dot cislunar"></i>Cislunar Domain <strong id="zone-cislunar-count">—</strong></span>
         </div>
-      </div>
+      </section>
+
+      <section class="panel-section">
+        <h3>Scientific data</h3>
+        <p id="data-status" class="data-status">Loading manifest and trajectory payload…</p>
+      </section>
+
+      <section class="panel-section">
+        <h3>Current scope</h3>
+        <p class="data-status">This release visualizes the real 64-slot observer library and exact domain grid. Photometric coverage tensors and optimized constellation selections are the next integration stage.</p>
+      </section>
+    </aside>
+
+    <section class="timeline-panel" aria-label="Time controls">
+      <button id="play-toggle" class="control-button primary play-button" type="button" disabled>Play</button>
+      <input id="time-slider" type="range" min="0" max="72" value="0" disabled aria-label="Time sample">
+      <span id="timeline-label" class="timeline-label">Loading trajectory dataset</span>
     </section>
   </main>
 
-  <site-footer></site-footer>
-  <script type="module" src="../../assets/js/starfield.js"></script>
+  <script type="module" src="./js/main.js"></script>
 </body>
 </html>

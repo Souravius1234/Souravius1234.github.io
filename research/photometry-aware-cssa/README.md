@@ -2,21 +2,22 @@
 
 Interactive companion to the paper **Photometry-Aware Sensor Placement for Cislunar Space Situational Awareness**.
 
-## Scope
+## Current implementation
 
-The browser application will visualize precomputed scientific products only. CR3BP propagation, CLAP calibration, photometric evaluation, and mixed-integer optimization remain in the research codebase.
+The explorer now includes:
 
-The first public version will include:
+- Earth-Moon synodic rotating-frame scene
+- Earth, Moon, barycenter, L1-L5, axes, and the Earth-centered XGEO boundary
+- the exact 4,782-cell planar surveillance grid reconstructed from the study configuration
+- Earth Local, Lunar Local, and Cislunar Domain macro-zones
+- 64 JPL-seeded CR3BP observer slots across halo, Lyapunov, DRO, short-period, long-period, and resonant families
+- compressed trajectory loading, family filtering, moving observer markers, timeline scrubbing, and playback
 
-- Earth-Moon rotating-frame scene
-- Earth, Moon, Lagrange points, and XGEO domain
-- candidate and selected observer trajectories
-- time-dependent grid-cell detectability and quality
-- constellation-size selection
-- zone-level coverage metrics
-- paper, method, citation, and limitation panels
+Photometric coverage tensors and optimized constellation selections are not yet connected.
 
-## Planned structure
+## Data boundary
+
+The browser visualizes precomputed scientific products only. CR3BP propagation, CLAP calibration, photometric evaluation, and mixed-integer optimization remain in the research codebase.
 
 ```text
 photometry-aware-cssa/
@@ -25,34 +26,31 @@ photometry-aware-cssa/
 ├── css/
 │   └── explorer.css
 ├── js/
-│   ├── main.js
-│   ├── scene.js
+│   ├── constants.js
 │   ├── data-loader.js
-│   ├── coverage-layer.js
-│   ├── controls.js
-│   └── charts.js
-├── assets/
+│   ├── grid-layer.js
+│   ├── lagrange.js
+│   ├── main.js
+│   ├── observer-layer.js
+│   └── scene.js
 └── data/
     ├── manifest.json
-    ├── grid.bin
-    ├── observers.bin
-    ├── constellations.json
-    └── coverage/
+    ├── observer-meta-v2.json
+    └── observer-positions-01.txt
 ```
 
-## Data boundary
+The trajectory payload is quantized and delta encoded for static GitHub Pages delivery. The loader validates the expected observer, sample, component, and grid-cell counts before rendering.
 
-The web exporter should produce browser-ready files with this conceptual contract:
+## Next integration stage
 
-- `manifest.json`: dimensions, frame, units, available cases, and version metadata
-- grid coordinates and zone IDs
-- observer trajectory states and orbit-family labels
-- optimized observer selections by constellation size
-- quantized detectability or quality arrays
-- aggregate and zone-stratified coverage summaries
+The next dataset package should add:
 
-Large generated source files remain excluded from this repository. Only compressed data required by the published page should be committed.
+- time-dependent detectability or quality arrays
+- fixed-cardinality optimized selections
+- minimum-cardinality selection
+- aggregate and macro-zone coverage summaries
+- selected-observer highlighting and coverage heatmaps
 
 ## Scientific limitation
 
-The initial explorer represents the paper's attitude-agile photometric domain-coverage model. It does not model finite-FOV tasking, simultaneous observation conflicts, slew time, or scheduling.
+The current explorer represents the paper's attitude-agile photometric domain-coverage model. It does not model finite-FOV tasking, simultaneous observation conflicts, slew time, or scheduling.
