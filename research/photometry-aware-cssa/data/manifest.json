@@ -31,35 +31,15 @@
     "outerRadiusLU": 3.9021852237,
     "weightMode": "zone_normalized",
     "zones": [
-      {
-        "id": 1,
-        "name": "Earth Local",
-        "center": "earth",
-        "radiusLU": 0.3290634755,
-        "priorityWeight": 1.2,
-        "color": "#60a5fa"
-      },
-      {
-        "id": 2,
-        "name": "Lunar Local",
-        "center": "moon",
-        "radiusLU": 0.1719562955,
-        "priorityWeight": 1.2,
-        "color": "#f8fafc"
-      },
-      {
-        "id": 3,
-        "name": "Cislunar Domain",
-        "center": "remaining valid cells",
-        "priorityWeight": 1,
-        "color": "#22d3ee"
-      }
+      {"id": 1, "name": "Earth Local", "center": "earth", "radiusLU": 0.3290634755, "priorityWeight": 1.2, "color": "#60a5fa"},
+      {"id": 2, "name": "Lunar Local", "center": "moon", "radiusLU": 0.1719562955, "priorityWeight": 1.2, "color": "#f8fafc"},
+      {"id": 3, "name": "Cislunar Domain", "center": "remaining valid cells", "priorityWeight": 1, "color": "#22d3ee"}
     ]
   },
   "datasets": {
     "observerTrajectories": {
       "status": "available",
-      "metadata": "./data/observer-meta.json"
+      "metadata": "./data/observer-meta-v2.json"
     },
     "grid": {
       "status": "available",
