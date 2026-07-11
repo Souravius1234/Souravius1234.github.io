@@ -1,21 +1,70 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "title": "Photometry-Aware Sensor Placement for Cislunar Space Situational Awareness",
   "frame": "Earth-Moon synodic barycentric",
   "distanceUnit": "Earth-Moon LU",
   "timeUnit": "Earth-Moon CR3BP TU",
   "mu": 0.0121505856,
   "distanceKm": 384400,
+  "timeUnitSeconds": 375200,
   "xgeoRadiusKm": 1500000,
   "study": {
     "candidateObservers": 64,
     "gridCells": 4782,
     "timeSamples": 73,
-    "designMatrixEntries": 22341504
+    "designMatrixEntries": 22341504,
+    "horizonDays": 27.321661
+  },
+  "grid": {
+    "xMin": -4,
+    "xMax": 4,
+    "yMin": -4,
+    "yMax": 4,
+    "nx": 81,
+    "ny": 81,
+    "z": 0,
+    "earthRadiusLU": 0.0165924462,
+    "moonRadiusLU": 0.0045197711,
+    "earthBufferLU": 0.015,
+    "moonBufferLU": 0.01,
+    "outerCenter": "earth",
+    "outerRadiusLU": 3.9021852237,
+    "weightMode": "zone_normalized",
+    "zones": [
+      {
+        "id": 1,
+        "name": "Earth Local",
+        "center": "earth",
+        "radiusLU": 0.3290634755,
+        "priorityWeight": 1.2,
+        "color": "#60a5fa"
+      },
+      {
+        "id": 2,
+        "name": "Lunar Local",
+        "center": "moon",
+        "radiusLU": 0.1719562955,
+        "priorityWeight": 1.2,
+        "color": "#f8fafc"
+      },
+      {
+        "id": 3,
+        "name": "Cislunar Domain",
+        "center": "remaining valid cells",
+        "priorityWeight": 1,
+        "color": "#22d3ee"
+      }
+    ]
   },
   "datasets": {
-    "observerTrajectories": null,
-    "grid": null,
+    "observerTrajectories": {
+      "status": "available",
+      "index": "./data/observers-index.json"
+    },
+    "grid": {
+      "status": "available",
+      "mode": "generated-from-manifest"
+    },
     "coverage": null,
     "constellations": null
   }
