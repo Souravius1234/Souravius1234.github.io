@@ -6,15 +6,25 @@ const loadJSON = async (path) => {
   return response.json();
 };
 
-const decodeFloat32LE = (base64) => {
+const decodeBytes = (base64) => {
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+};
 
-  if (bytes.byteLength % 4 !== 0) throw new Error('Invalid Float32 payload length.');
+const decodePackedPositions = (payload) => {
+  const bytes = decodeBytes(payload.positionsBase64);
+  if (payload.encoding !== 'int16-le-base64') {
+    throw new Error(`Unsupported observer encoding: ${payload.encoding}`);
+  }
+  if (bytes.byteLength % 2 !== 0) throw new Error('Invalid Int16 trajectory payload length.');
+
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  const values = new Float32Array(bytes.byteLength / 4);
-  for (let i = 0; i < values.length; i += 1) values[i] = view.getFloat32(i * 4, true);
+  const values = new Float32Array(bytes.byteLength / 2);
+  for (let i = 0; i < values.length; i += 1) {
+    values[i] = view.getInt16(i * 2, true) * payload.positionScaleLU;
+  }
   return values;
 };
 
@@ -23,37 +33,27 @@ const distance = (x, y, z, center) => Math.hypot(x - center[0], y - center[1], z
 export const loadManifest = () => loadJSON('./data/manifest.json');
 
 export const loadObserverDataset = async (descriptor) => {
-  if (!descriptor?.index) throw new Error('Observer dataset descriptor is missing its index path.');
-
-  const indexUrl = new URL(descriptor.index, window.location.href);
-  const index = await loadJSON(indexUrl.href);
-  const chunkPayloads = await Promise.all(
-    index.chunks.map((chunk) => loadJSON(new URL(chunk, indexUrl).href))
-  );
-
-  const observers = [];
-  chunkPayloads.forEach((chunk) => {
-    if (chunk.encoding !== 'float32-le-base64') throw new Error(`Unsupported observer encoding: ${chunk.encoding}`);
-    const values = decodeFloat32LE(chunk.positionsBase64);
-    const stride = chunk.samplesPerObserver * chunk.componentsPerSample;
-    const expected = chunk.observers.length * stride;
-    if (values.length !== expected) throw new Error(`Observer chunk has ${values.length} values; expected ${expected}.`);
-
-    chunk.observers.forEach((metadata, localIndex) => {
-      const start = localIndex * stride;
-      observers.push({
-        ...metadata,
-        positions: values.slice(start, start + stride)
-      });
-    });
-  });
-
-  observers.sort((a, b) => a.index - b.index);
-  if (observers.length !== index.observerCount) {
-    throw new Error(`Loaded ${observers.length} observers; expected ${index.observerCount}.`);
+  if (!descriptor?.file) throw new Error('Observer dataset descriptor is missing its file path.');
+  const payload = await loadJSON(new URL(descriptor.file, window.location.href).href);
+  const values = decodePackedPositions(payload);
+  const stride = payload.samplesPerObserver * payload.componentsPerSample;
+  const expected = payload.observers.length * stride;
+  if (values.length !== expected) {
+    throw new Error(`Observer dataset has ${values.length} values; expected ${expected}.`);
   }
 
-  return { ...index, observers };
+  const observers = payload.observers.map((metadata, index) => ({
+    ...metadata,
+    positions: values.slice(index * stride, (index + 1) * stride)
+  }));
+
+  observers.sort((a, b) => a.index - b.index);
+  if (observers.length !== payload.observerCount) {
+    throw new Error(`Loaded ${observers.length} observers; expected ${payload.observerCount}.`);
+  }
+
+  const { positionsBase64, ...dataset } = payload;
+  return { ...dataset, observers };
 };
 
 export const buildGridDataset = (manifest) => {
