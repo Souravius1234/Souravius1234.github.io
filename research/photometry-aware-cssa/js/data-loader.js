@@ -11,7 +11,7 @@ const loadText = async (path) => {
 };
 
 const base64ToBytes = (base64) => {
-  const binary = atob(base64);
+  const binary = atob(base64.replace(/\s+/g, ''));
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
   return bytes;
@@ -19,26 +19,40 @@ const base64ToBytes = (base64) => {
 
 const gunzip = async (bytes) => {
   if (!('DecompressionStream' in window)) {
-    throw new Error('This browser does not support DecompressionStream required for trajectory data.');
+    throw new Error('This browser does not support DecompressionStream required for compressed trajectory data.');
   }
   const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   return new Uint8Array(await new Response(stream).arrayBuffer());
 };
 
+const decodeInt16LE = (bytes) => {
+  if (bytes.byteLength % 2 !== 0) throw new Error('Invalid Int16 trajectory payload length.');
+  const values = new Int16Array(bytes.byteLength / 2);
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  for (let i = 0; i < values.length; i += 1) values[i] = view.getInt16(i * 2, true);
+  return values;
+};
+
 const decodePackedPositions = async (payload, base64) => {
-  if (payload.encoding !== 'gzip-int16-delta-component-major-base64') {
+  let bytes = base64ToBytes(base64);
+  const isGzip = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
+  if (isGzip) bytes = await gunzip(bytes);
+
+  const supported = new Set([
+    'gzip-int16-delta-component-major-base64',
+    'int16-delta-component-major-base64'
+  ]);
+  if (!supported.has(payload.encoding)) {
     throw new Error(`Unsupported observer encoding: ${payload.encoding}`);
   }
-  const bytes = await gunzip(base64ToBytes(base64));
-  if (bytes.byteLength % 2 !== 0) throw new Error('Invalid Int16 trajectory payload length.');
-  const deltas = new Int16Array(bytes.byteLength / 2);
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  for (let i = 0; i < deltas.length; i += 1) deltas[i] = view.getInt16(i * 2, true);
 
+  const deltas = decodeInt16LE(bytes);
   const samples = payload.samplesPerObserver;
   const components = payload.componentsPerSample;
   const expected = payload.observerCount * samples * components;
-  if (deltas.length !== expected) throw new Error(`Trajectory payload has ${deltas.length} values; expected ${expected}.`);
+  if (deltas.length !== expected) {
+    throw new Error(`Trajectory payload has ${deltas.length} values; expected ${expected}.`);
+  }
 
   const values = new Float32Array(expected);
   let cursor = 0;
@@ -64,15 +78,24 @@ export const loadObserverDataset = async (descriptor) => {
   if (!descriptor?.metadata) throw new Error('Observer dataset descriptor is missing its metadata path.');
   const metadataUrl = new URL(descriptor.metadata, window.location.href);
   const payload = await loadJSON(metadataUrl.href);
-  const encodedParts = await Promise.all(payload.positionParts.map((part) => loadText(new URL(part, metadataUrl).href)));
-  const values = await decodePackedPositions(payload, encodedParts.join('').trim());
+  if (!Array.isArray(payload.positionParts) || payload.positionParts.length === 0) {
+    throw new Error('Observer metadata does not list any trajectory payload parts.');
+  }
+
+  const encodedParts = await Promise.all(
+    payload.positionParts.map((part) => loadText(new URL(part, metadataUrl).href))
+  );
+  const values = await decodePackedPositions(payload, encodedParts.join(''));
   const stride = payload.samplesPerObserver * payload.componentsPerSample;
   const observers = payload.observers.map((metadata, index) => ({
     ...metadata,
     positions: values.slice(index * stride, (index + 1) * stride)
   }));
   observers.sort((a, b) => a.index - b.index);
-  if (observers.length !== payload.observerCount) throw new Error(`Loaded ${observers.length} observers; expected ${payload.observerCount}.`);
+
+  if (observers.length !== payload.observerCount) {
+    throw new Error(`Loaded ${observers.length} observers; expected ${payload.observerCount}.`);
+  }
   return { ...payload, observers };
 };
 
@@ -99,6 +122,7 @@ export const buildGridDataset = (manifest) => {
         && dMoon >= config.moonRadiusLU + config.moonBufferLU
         && dEarth <= config.outerRadiusLU;
       if (!valid) continue;
+
       let zoneId = 3;
       if (dEarth <= earthZone.radiusLU) zoneId = 1;
       if (dMoon <= lunarZone.radiusLU) zoneId = 2;
@@ -107,15 +131,22 @@ export const buildGridDataset = (manifest) => {
     }
   }
 
-  if (zoneIds.length !== manifest.study.gridCells) throw new Error(`Generated ${zoneIds.length} grid cells; expected ${manifest.study.gridCells}.`);
+  if (zoneIds.length !== manifest.study.gridCells) {
+    throw new Error(`Generated ${zoneIds.length} grid cells; expected ${manifest.study.gridCells}.`);
+  }
+
   const counts = new Map(config.zones.map((zone) => [zone.id, 0]));
   zoneIds.forEach((zoneId) => counts.set(zoneId, counts.get(zoneId) + 1));
-  const activePriority = config.zones.reduce((sum, zone) => sum + (counts.get(zone.id) > 0 ? zone.priorityWeight : 0), 0);
+  const activePriority = config.zones.reduce(
+    (sum, zone) => sum + (counts.get(zone.id) > 0 ? zone.priorityWeight : 0),
+    0
+  );
   const weights = new Float32Array(zoneIds.length);
   zoneIds.forEach((zoneId, index) => {
     const zone = config.zones.find((candidate) => candidate.id === zoneId);
     weights[index] = (zone.priorityWeight / activePriority) / counts.get(zoneId);
   });
+
   return {
     positions: new Float32Array(positions),
     zoneIds: new Uint8Array(zoneIds),
