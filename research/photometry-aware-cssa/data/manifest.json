@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "title": "Photometry-Aware Sensor Placement for Cislunar Space Situational Awareness",
+  "frame": "Earth-Moon synodic barycentric",
+  "distanceUnit": "Earth-Moon LU",
+  "timeUnit": "Earth-Moon CR3BP TU",
+  "mu": 0.0121505856,
+  "distanceKm": 384400,
+  "xgeoRadiusKm": 1500000,
+  "study": {
+    "candidateObservers": 64,
+    "gridCells": 4782,
+    "timeSamples": 73,
+    "designMatrixEntries": 22341504
+  },
+  "datasets": {
+    "observerTrajectories": null,
+    "grid": null,
+    "coverage": null,
+    "constellations": null
+  }
+}
