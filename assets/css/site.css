@@ -61,6 +61,11 @@ p {
   margin-top: 0;
 }
 
+.about-page .glass-card p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 #bg-canvas {
   position: fixed;
   inset: 0;
