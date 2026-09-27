@@ -136,26 +136,11 @@
         }
 
         .worm-draw-path {
-            fill: none;
-            stroke: #e4002b;
-            stroke-width: 18;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            vector-effect: non-scaling-stroke;
-            stroke-dasharray: 1;
-            stroke-dashoffset: 1;
-            will-change: stroke-dashoffset;
+            fill: #e4002b;
         }
 
-        .worm-draw-mask {
-            fill: none;
-            stroke: #fff;
-            stroke-width: 26;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            vector-effect: non-scaling-stroke;
-            stroke-dasharray: 1;
-            stroke-dashoffset: 1;
+        .worm-reveal-rect {
+            will-change: width;
         }
 
         .worm-draw-label {
@@ -328,47 +313,13 @@
                     <svg viewBox="0 0 1000 180" role="img" aria-labelledby="worm-title">
                         <title id="worm-title">Sourav Ghosh</title>
                         <defs>
-                            <mask id="worm-reveal-mask" maskUnits="userSpaceOnUse">
-                                <rect x="0" y="0" width="1000" height="180" fill="black"></rect>
-                                <path id="worm-mask-path" class="worm-draw-mask"
-                                    d="M55 122
-                                       C55 68 62 46 80 46
-                                       C101 46 98 92 118 92
-                                       C138 92 139 46 160 46
-                                       C178 46 184 64 184 92
-                                       C184 120 196 132 214 132
-                                       C235 132 244 117 244 92
-                                       C244 65 251 46 270 46
-                                       C289 46 295 65 295 92
-                                       C295 120 306 132 325 132
-                                       C342 132 353 118 353 92
-                                       C353 65 361 46 379 46
-                                       C398 46 405 66 405 92
-                                       C405 118 417 132 435 132
-                                       C454 132 463 117 463 92
-                                       C463 65 470 46 489 46
-                                       C507 46 515 65 515 92
-                                       C515 119 527 132 545 132
-                                       C565 132 575 118 575 92
-                                       C575 65 582 46 600 46
-                                       C620 46 627 65 627 92
-                                       C627 119 638 132 657 132
-                                       C676 132 686 118 686 92
-                                       C686 65 693 46 712 46
-                                       C730 46 738 65 738 92
-                                       C738 119 750 132 768 132
-                                       C787 132 797 118 797 92
-                                       C797 65 804 46 823 46
-                                       C842 46 849 66 849 92
-                                       C849 118 861 132 879 132
-                                       C899 132 908 118 908 92
-                                       C908 65 915 46 934 46
-                                       C951 46 959 64 959 92
-                                       C959 118 966 128 977 128"></path>
-                            </mask>
+                            <clipPath id="worm-reveal-clip" clipPathUnits="userSpaceOnUse">
+                                <rect id="worm-reveal-rect" class="worm-reveal-rect"
+                                      x="0" y="0" width="0" height="180"></rect>
+                            </clipPath>
                         </defs>
 
-                        <g mask="url(#worm-reveal-mask)">
+                        <g clip-path="url(#worm-reveal-clip)">
                             <text x="500" y="121"
                                   text-anchor="middle"
                                   font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
@@ -379,70 +330,6 @@
                         </g>
                     </svg>
                     <div class="worm-draw-label">Aerospace Engineer &nbsp;&middot;&nbsp; MEXT Scholar</div>
-                </div>
-            </section>
-
-            <!-- About Section -->
-            <section id="about" class="section-container">
-                <h2 class="text-3xl mb-6">About Me</h2>
-                <div class="glass-card">
-                    <p class="text-gray-300 leading-relaxed" text-align="justify">
-                        I am an Aerospace Engineer from India, currently a Graduate Student at the Intelligent Space Systems Laboratory, Department of Aeronautics and Astronautics at the University of Tokyo.
-                        I designed this webpage taking inspiration from Interstellar, a movie which motivated me to this path towards exploring the cosmos.
-                        I study and do research in the areas of Space Debris Tracking, Propagation, and Risk Assessment in the Cislunar Region, Trajectory Design and Optimization, Mission Design and Operations, Embedded Systems, and Robotics. <br><br>
-                        I am not a web-designer, and have tried my best to improve this webpage. In fact, I made this website to kill some boredom, and also because I felt that my previous webpage wasn't looking that great. I am open to suggestions, so please don't hesitate to reach out to me via the contact form or via my socials! <br>
-                        The code to this webpage is available on my <b>Github</b>. Please do drop by and take a look! <br>
-                        To know more about me, check out my <b>About Me</b> page! <br>
-
-                        <div class="flex justify-center mt-6">
-                        <button id="enter-btn" class="px-8 py-3 text-lg font-bold text-white border-2 border-white rounded-full transition hover:bg-white hover:text-black hover:shadow-xl glow-button">
-                            <a href="About Me.html">
-                            About Me!
-                            </a>
-                        </button>
-                        </div>
-
-                        <!-- <a href="About Me.html" class="button primary">About Me!</a> Add a button here to guide to About Me page -->
-                    </p>
-                </div>
-            </section>
-
-            <!-- Research Works Section (NEW) -->
-            <section id="research" class="section-container">
-                <h2 class="text-3xl mb-6">Research Works</h2>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Placeholder for a research paper -->
-                    <div class="glass-card">
-                        <h3 class="text-xl mb-2">Cislunar Space Traffic Management based on Operational Zones</h3>
-                        <p class="text-gray-400 mb-4">A study on the use of Operational zones for traffic management in the cislunar region. Demonstrates the use of an optical system for tracking of objects in the region. Presented at ISTS 2025.</p>
-                        <a href="pubs/istspaper.pdf" class="text-blue-400 hover:underline">View Publication &rarr;</a>
-                    </div>
-                     <!-- Placeholder for another research paper -->
-                    <div class="glass-card">
-                        <h3 class="text-xl mb-2">Characterization of Orbits in Cislunar Region for Space Traffic Management</h3>
-                        <p class="text-gray-400 mb-4">Characterizing and Dividing regions in the Cislunar Space for Space Traffic Management based on Operational Zones. Presented at IAC 2024.</p>
-                        <a href="pubs/iac1.pdf" class="text-blue-400 hover:underline">View Publication &rarr;</a>
-                    </div>
-                    <!--
-                    <p text-align="center"><b>View More Research Work</b></p> Add a button to show more papers here
-                    -->
-                </div>
-                <div class="flex justify-center mt-6">
-                    <button id="enter-btn" class="px-8 py-3 text-lg font-bold text-white border-2 border-white rounded-full transition hover:bg-white hover:text-black hover:shadow-xl glow-button">
-                        <a href="research.html">
-                            View More
-                        </a>
-                    </button>
-                </div>
-            </section>
-
-            <!-- Skills Section -->
-            <section id="skills" class="section-container">
-                <h2 class="text-3xl mb-6">Research Interests</h2>
-                <div class="glass-card">
-                    <div class="flex flex-wrap gap-3">
-                        <span class="tag px-3 py-1 rounded-full text-sm">Astrodynamics</span> <span class="tag px-3 py-1 rounded-full text-sm">Trajectory Optimization</span> <span class="tag px-3 py-1 rounded-full text-sm">Space Debris Tracking, Propagation and Uncertainty Analysis</span> <span class="tag px-3 py-1 rounded-full text-sm">Embedded Systems</span> <span class="tag px-3 py-1 rounded-full text-sm">Robotics</span> <span class="tag px-3 py-1 rounded-full text-sm">Aerodynamics</span> <span class="tag px-3 py-1 rounded-full text-sm">Plasma Flow Simulations</span> <span class="tag px-3 py-1 rounded-full text-sm">Multi-Body Dynamics</span>
-                    </div>
                 </div>
             </section>
 
@@ -617,37 +504,31 @@
   </script>
 
   <script>
-    // Scroll-driven left-to-right Worm-style drawing reveal.
+    // Scroll-driven clean left-to-right reveal.
     (() => {
       const header = document.getElementById('header');
-      const maskPath = document.getElementById('worm-mask-path');
-      if (!header || !maskPath) return;
+      const revealRect = document.getElementById('worm-reveal-rect');
+      if (!header || !revealRect) return;
 
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const length = maskPath.getTotalLength();
-      maskPath.style.strokeDasharray = String(length);
-      maskPath.style.strokeDashoffset = String(length);
-
       const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
       const smooth = t => t * t * (3 - 2 * t);
 
       const render = () => {
         if (reduceMotion.matches) {
-          maskPath.style.strokeDashoffset = '0';
+          revealRect.setAttribute('width', '1000');
           return;
         }
 
         const rect = header.getBoundingClientRect();
         const vh = window.innerHeight;
 
-        // Match the GIF's left-to-right draw timing: mostly linear, with a
-        // slightly eased finish as the final letters complete.
         const start = vh * 0.96;
         const end = vh * 0.40;
         const raw = clamp((start - rect.top) / (start - end), 0, 1);
         const p = smooth(raw);
 
-        maskPath.style.strokeDashoffset = String(length * (1 - p));
+        revealRect.setAttribute('width', String(1000 * p));
       };
 
       let raf = 0;
