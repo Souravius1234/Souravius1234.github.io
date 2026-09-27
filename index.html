@@ -6,10 +6,7 @@
   <title>Sourav Ghosh</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
+  <!-- NASA-era typography: Helvetica Light / Medium system -->
 
   <!-- ES Module Map for THREE.js -->
   <script type="importmap">
@@ -27,7 +24,8 @@
             scroll-behavior: smooth; /* Enables smooth scrolling for anchor links */
         }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 300;
             background-color: #000000;
             color: #f0f0f0;
             overflow-x: hidden;
@@ -83,8 +81,9 @@
         }
         /* Typography and Card Styles */
         h1, h2, h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 500;
+            letter-spacing: -0.025em;
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
         }
         .glass-card {
@@ -117,7 +116,7 @@
             animation: bounce 2s infinite, fadeOut 1s ease-out forwards;
             animation-delay: 0s, 6s;
         }
-        .scroll-down-indicator span { display: block; margin-bottom: 5px; font-family: 'Orbitron', sans-serif; }
+        .scroll-down-indicator span { display: block; margin-bottom: 5px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; letter-spacing: 0.08em; }
         .scroll-down-indicator .mouse { width: 25px; height: 40px; border: 2px solid white; border-radius: 20px; position: relative; margin: 0 auto; }
         .scroll-down-indicator .scroller { width: 4px; height: 8px; background-color: white; border-radius: 2px; position: absolute; left: 50%; top: 8px; transform: translateX(-50%); animation: scroll 1.5s infinite; }
         @keyframes scroll { 0% { top: 8px; opacity: 1; } 100% { top: 20px; opacity: 0; } }
