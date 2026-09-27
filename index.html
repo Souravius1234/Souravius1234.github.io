@@ -130,12 +130,13 @@
         .worm-vortex {
             position: absolute;
             left: 50%;
-            top: 50%;
-            width: max-content;
+            top: 2.6rem;
+            width: 0;
+            height: 0;
             pointer-events: none;
             transform-style: preserve-3d;
             perspective: 900px;
-            z-index: -1;
+            z-index: 1;
         }
 
         .worm-vortex-copy {
@@ -143,10 +144,10 @@
             left: 0;
             top: 0;
             margin: 0;
-            font: inherit;
-            font-size: inherit;
-            font-weight: inherit;
-            line-height: inherit;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: clamp(3.5rem, 9vw, 7.5rem);
+            font-weight: 300;
+            line-height: 0.9;
             letter-spacing: 0.075em;
             white-space: nowrap;
             color: #fff;
@@ -600,20 +601,20 @@
         const vh = window.innerHeight;
 
         // Progress while the title moves from the lower viewport toward center.
-        const raw = (vh * 0.93 - rect.top) / (vh * 0.72);
+        const raw = (vh * 0.90 - rect.top) / (vh * 0.62);
         const p = clamp(raw, 0, 1);
         const e = smooth(p);
 
         // Full red field during the sequence, fading away once resolved.
-        const fadeIn = clamp(p / 0.12, 0, 1);
-        const fadeOut = clamp((1 - p) / 0.08, 0, 1);
-        const fieldOpacity = p < 0.92 ? fadeIn : fadeOut;
-        field.style.opacity = String(fieldOpacity);
+        const fadeIn = clamp(p / 0.18, 0, 1);
+        const fadeOut = clamp((1 - p) / 0.14, 0, 1);
+        const fieldOpacity = p < 0.86 ? fadeIn : fadeOut;
+        field.style.opacity = String(fieldOpacity * 0.90);
 
         wordmark.classList.toggle('worm-sequence-active', p > 0.015 && p < 0.995);
 
         // Hide the final word until the rotating stack is almost aligned.
-        const finalReveal = smooth(clamp((p - 0.72) / 0.28, 0, 1));
+        const finalReveal = smooth(clamp((p - 0.48) / 0.34, 0, 1));
         wordmark.style.opacity = String(finalReveal);
         wordmark.style.filter = 'blur(' + lerp(5, 0, finalReveal).toFixed(2) + 'px)';
         wordmark.style.transform =
@@ -628,22 +629,22 @@
           const inv = 1 - q;
 
           // About 2.5 turns before settling horizontally.
-          const turns = 2.55 + depth * 0.35;
+          const turns = 1.55 + depth * 0.30;
           const rotation = inv * turns * 360;
 
-          // Start almost at the vanishing point and grow to full logo size.
-          const scale = lerp(0.035 + depth * 0.01, 1.0, q);
+          // Keep the full wordmark readable throughout the motion.
+          const scale = lerp(0.42 + depth * 0.025, 1.0, q);
 
-          // Slight offset around the center creates the characteristic spiral fan.
-          const radius = inv * (18 + depth * 115);
+          // Broad spiral around the title position, not a collapse to a point.
+          const radius = inv * (36 + depth * 82);
           const radians = rotation * Math.PI / 180;
           const x = Math.cos(radians) * radius;
           const y = Math.sin(radians) * radius * 0.58;
 
           // Older copies are blurrier and fainter, mimicking optical smear.
-          const blur = lerp(18 + depth * 18, 0.8, q);
+          const blur = lerp(8 + depth * 8, 0.6, q);
           const opacityEnvelope =
-            Math.sin(Math.PI * clamp(q, 0, 1)) * (0.18 + (1 - depth) * 0.36);
+            Math.max(0.10, Math.sin(Math.PI * clamp(q, 0, 1))) * (0.20 + (1 - depth) * 0.32);
 
           copy.style.transform =
             'translate(-50%, -50%) ' +
