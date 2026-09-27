@@ -128,15 +128,14 @@
         }
 
         .worm-vortex {
-            position: absolute;
+            position: fixed;
             left: 50%;
-            top: 2.6rem;
+            top: 50%;
             width: 0;
             height: 0;
+            z-index: 3;
             pointer-events: none;
             transform-style: preserve-3d;
-            perspective: 900px;
-            z-index: 1;
         }
 
         .worm-vortex-copy {
@@ -145,20 +144,20 @@
             top: 0;
             margin: 0;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: clamp(3.5rem, 9vw, 7.5rem);
+            font-size: clamp(4rem, 10vw, 8.5rem);
             font-weight: 300;
             line-height: 0.9;
             letter-spacing: 0.075em;
             white-space: nowrap;
             color: #fff;
-            transform-origin: center;
+            transform-origin: center center;
             will-change: transform, filter, opacity;
             user-select: none;
         }
 
         .hero-wordmark.worm-sequence-active {
             position: relative;
-            z-index: 2;
+            z-index: 4;
             color: #fff;
             text-shadow: none;
         }
@@ -554,123 +553,137 @@
   </script>
 
   <script>
-    // Scroll-linked reconstruction of the vintage NASA Worm title sequence.
-    // The entire wordmark spirals out of a central vanishing point and resolves
-    // into one crisp horizontal lockup.
+    // Scroll-linked full-word spiral smear inspired by the vintage NASA Worm titles.
     (() => {
       const wordmark = document.querySelector('.hero-wordmark');
+      const subtitle = document.querySelector('.hero-subtitle');
       const field = document.getElementById('worm-sequence-field');
       if (!wordmark || !field) return;
 
-      const originalText = wordmark.textContent.trim();
+      const text = wordmark.textContent.trim();
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
       const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-      const lerp = (a, b, t) => a + (b - a) * t;
       const smooth = t => t * t * (3 - 2 * t);
-
-      wordmark.setAttribute('aria-label', originalText);
+      const lerp = (a, b, t) => a + (b - a) * t;
 
       const vortex = document.createElement('div');
       vortex.className = 'worm-vortex';
       vortex.setAttribute('aria-hidden', 'true');
-      wordmark.parentElement.appendChild(vortex);
+      document.body.appendChild(vortex);
 
-      const copyCount = 18;
+      const copyCount = 11;
       const copies = [];
-
       for (let i = 0; i < copyCount; i++) {
-        const copy = document.createElement('div');
-        copy.className = 'worm-vortex-copy';
-        copy.textContent = originalText;
-        vortex.appendChild(copy);
-        copies.push(copy);
+        const el = document.createElement('div');
+        el.className = 'worm-vortex-copy';
+        el.textContent = text;
+        vortex.appendChild(el);
+        copies.push(el);
       }
+
+      const getProgress = () => {
+        const header = document.getElementById('header');
+        if (!header) return 0;
+        const rect = header.getBoundingClientRect();
+        const vh = window.innerHeight;
+
+        // Starts shortly before the title enters the viewport and ends
+        // when the title is around the middle of the screen.
+        const start = vh * 0.98;
+        const end = vh * 0.38;
+        return clamp((start - rect.top) / (start - end), 0, 1);
+      };
 
       const render = () => {
         if (reduceMotion.matches) {
           field.style.opacity = '0';
-          wordmark.classList.remove('worm-sequence-active');
+          copies.forEach(el => el.style.opacity = '0');
           wordmark.style.opacity = '1';
-          wordmark.style.transform = 'scaleX(1.06)';
           wordmark.style.filter = 'none';
-          copies.forEach(copy => copy.style.opacity = '0');
+          wordmark.style.transform = 'scaleX(1.06)';
+          if (subtitle) subtitle.style.opacity = '1';
           return;
         }
 
-        const rect = wordmark.getBoundingClientRect();
-        const vh = window.innerHeight;
-
-        // Progress while the title moves from the lower viewport toward center.
-        const raw = (vh * 0.90 - rect.top) / (vh * 0.62);
-        const p = clamp(raw, 0, 1);
+        const p = getProgress();
         const e = smooth(p);
 
-        // Full red field during the sequence, fading away once resolved.
-        const fadeIn = clamp(p / 0.18, 0, 1);
-        const fadeOut = clamp((1 - p) / 0.14, 0, 1);
-        const fieldOpacity = p < 0.86 ? fadeIn : fadeOut;
-        field.style.opacity = String(fieldOpacity * 0.90);
+        // The red plate only exists during the title animation.
+        const inPlate = smooth(clamp(p / 0.15, 0, 1));
+        const outPlate = 1 - smooth(clamp((p - 0.90) / 0.10, 0, 1));
+        const plate = inPlate * outPlate;
+        field.style.opacity = String(plate);
 
-        wordmark.classList.toggle('worm-sequence-active', p > 0.015 && p < 0.995);
+        // Hide the in-document title while the full-screen copies are active.
+        const finalReveal = smooth(clamp((p - 0.72) / 0.22, 0, 1));
+        wordmark.classList.toggle('worm-sequence-active', plate > 0.01);
+        wordmark.style.opacity = String(p < 0.06 ? 1 : finalReveal);
+        wordmark.style.filter = 'blur(' + lerp(0, 1.4, 1 - finalReveal).toFixed(2) + 'px)';
+        if (subtitle) subtitle.style.opacity = String(p < 0.06 ? 1 : finalReveal);
 
-        // Hide the final word until the rotating stack is almost aligned.
-        const finalReveal = smooth(clamp((p - 0.48) / 0.34, 0, 1));
-        wordmark.style.opacity = String(finalReveal);
-        wordmark.style.filter = 'blur(' + lerp(5, 0, finalReveal).toFixed(2) + 'px)';
-        wordmark.style.transform =
-          'scaleX(' + lerp(0.92, 1.06, finalReveal).toFixed(3) + ')';
+        copies.forEach((el, i) => {
+          const lag = i / (copyCount - 1);
+          const local = smooth(clamp((p - lag * 0.026) / 0.91, 0, 1));
+          const inv = 1 - local;
 
-        // The vintage sequence is essentially a stack of time-offset copies
-        // rotating out from the same central point.
-        copies.forEach((copy, i) => {
-          const depth = i / (copyCount - 1);
-          const delayed = clamp((p - depth * 0.035) / (1 - depth * 0.035), 0, 1);
-          const q = smooth(delayed);
-          const inv = 1 - q;
+          // Large, full-word fan. It rotates less than two turns and
+          // converges without shrinking to a dot.
+          const rotation = inv * (585 + lag * 85);
+          const scale = lerp(0.78 + lag * 0.025, 1.0, local);
 
-          // About 2.5 turns before settling horizontally.
-          const turns = 1.55 + depth * 0.30;
-          const rotation = inv * turns * 360;
+          const angle = rotation * Math.PI / 180;
+          const radius = inv * (90 + lag * 150);
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius * 0.62;
 
-          // Keep the full wordmark readable throughout the motion.
-          const scale = lerp(0.42 + depth * 0.025, 1.0, q);
+          const blur = lerp(8 + lag * 7, 0.25, local);
+          const settleFade = 1 - smooth(clamp((local - 0.82) / 0.18, 0, 1));
+          const appear = smooth(clamp((p - lag * 0.015) / 0.12, 0, 1));
+          const opacity = appear * settleFade * plate * (0.18 + (1 - lag) * 0.22);
 
-          // Broad spiral around the title position, not a collapse to a point.
-          const radius = inv * (36 + depth * 82);
-          const radians = rotation * Math.PI / 180;
-          const x = Math.cos(radians) * radius;
-          const y = Math.sin(radians) * radius * 0.58;
-
-          // Older copies are blurrier and fainter, mimicking optical smear.
-          const blur = lerp(8 + depth * 8, 0.6, q);
-          const opacityEnvelope =
-            Math.max(0.10, Math.sin(Math.PI * clamp(q, 0, 1))) * (0.20 + (1 - depth) * 0.32);
-
-          copy.style.transform =
+          el.style.transform =
             'translate(-50%, -50%) ' +
-            'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) ' +
-            'rotate(' + rotation.toFixed(2) + 'deg) ' +
-            'scale(' + scale.toFixed(4) + ')';
-
-          copy.style.filter = 'blur(' + blur.toFixed(2) + 'px)';
-          copy.style.opacity = String(opacityEnvelope * fieldOpacity);
+            'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) ' +
+            'rotate(' + rotation.toFixed(1) + 'deg) ' +
+            'scale(' + scale.toFixed(3) + ')';
+          el.style.filter = 'blur(' + blur.toFixed(2) + 'px)';
+          el.style.opacity = String(opacity);
         });
+
+        // One strong lead copy remains legible throughout, matching the
+        // characteristic bright head of the motion smear.
+        if (copies[0]) {
+          const leadLocal = e;
+          const inv = 1 - leadLocal;
+          const rotation = inv * 540;
+          const angle = rotation * Math.PI / 180;
+          const radius = inv * 95;
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius * 0.62;
+          copies[0].style.transform =
+            'translate(-50%, -50%) ' +
+            'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) ' +
+            'rotate(' + rotation.toFixed(1) + 'deg) ' +
+            'scale(' + lerp(0.82, 1.0, leadLocal).toFixed(3) + ')';
+          copies[0].style.filter = 'blur(' + lerp(4.5, 0, leadLocal).toFixed(2) + 'px)';
+          copies[0].style.opacity =
+            String(plate * (1 - smooth(clamp((p - 0.82) / 0.14, 0, 1))) * 0.82);
+        }
       };
 
-      let ticking = false;
-      const requestRender = () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
+      let raf = 0;
+      const schedule = () => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
           render();
-          ticking = false;
         });
       };
 
       render();
-      window.addEventListener('scroll', requestRender, { passive: true });
-      window.addEventListener('resize', requestRender);
-      reduceMotion.addEventListener?.('change', requestRender);
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', schedule);
+      reduceMotion.addEventListener?.('change', schedule);
     })();
   </script>
 </body>
