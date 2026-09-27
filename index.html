@@ -87,104 +87,143 @@
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
         }
 
-        /* Worm-era NASA-inspired homepage wordmark treatment */
-        .hero-wordmark {
-            margin: 0 0 1rem;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: clamp(3.5rem, 9vw, 7.5rem);
-            font-weight: 300;
-            line-height: 0.9;
-            letter-spacing: 0.075em;
-            text-transform: uppercase;
-            text-shadow: none;
-            transform: scaleX(1.06);
-            transform-origin: center;
-            white-space: nowrap;
-            will-change: transform, letter-spacing, color;
-        }
-
-        .hero-wordmark .worm-letter {
-            display: inline-block;
-        }
-
-        .hero-wordmark .worm-space {
-            display: inline-block;
-            width: 0.42em;
-        }
-
+        /* Custom worm-inspired SVG wordmark */
         #header {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            opacity: 1;
+            transform: none;
             overflow: visible;
-            isolation: isolate;
         }
 
-        .worm-sequence-field {
-            display: none;
-        }
-
-        .worm-draw {
+        .worm-scroll-range {
             position: relative;
-            display: inline-block;
-            width: min(92vw, 980px);
-            margin: 0 auto 1rem;
+            height: 245vh;
         }
 
-        .worm-draw svg {
+        .worm-stage {
+            position: sticky;
+            top: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 7rem 2rem 3rem;
+            overflow: hidden;
+        }
+
+        .worm-logo-wrap {
+            width: min(94vw, 1320px);
+        }
+
+        #wormLogo {
             display: block;
             width: 100%;
             height: auto;
             overflow: visible;
         }
 
-        .worm-draw-path {
+        .worm-glyph {
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 24;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            vector-effect: non-scaling-stroke;
+            will-change: stroke-dashoffset, opacity;
+        }
+
+        .worm-head {
             fill: #ffffff;
+            pointer-events: none;
+            opacity: 0;
         }
 
-        .worm-reveal-rect {
-            will-change: width;
-        }
-
-        .worm-draw-label {
-            margin-top: 0.9rem;
+        .worm-subtitle {
+            margin-top: 1.35rem;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: clamp(0.78rem, 1.5vw, 1rem);
+            font-size: clamp(0.72rem, 1.3vw, 0.95rem);
             font-weight: 400;
-            letter-spacing: 0.18em;
+            letter-spacing: 0.20em;
             text-transform: uppercase;
-            color: #d1d5db;
+            color: rgba(255, 255, 255, 0.34);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: color 180ms linear;
+            text-align: center;
         }
 
-        .hero-wordmark,
-        .hero-subtitle {
-            display: none;
+        .worm-progress {
+            width: min(54vw, 520px);
+            height: 1px;
+            margin-top: 1.25rem;
+            background: rgba(255,255,255,0.12);
+            overflow: hidden;
+        }
+
+        .worm-progress-bar {
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.72);
+            transform: scaleX(0);
+            transform-origin: left center;
+            will-change: transform;
+        }
+
+        @media (max-width: 720px) {
+            .worm-scroll-range {
+                height: 220vh;
+            }
+
+            .worm-stage {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+
+            .worm-logo-wrap {
+                width: 98vw;
+            }
+
+            .worm-glyph {
+                stroke-width: 18;
+            }
+
+            .worm-subtitle {
+                letter-spacing: 0.12em;
+                padding: 0 1rem;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .worm-draw-path,
-            .worm-draw-mask {
+            .worm-scroll-range {
+                height: auto;
+            }
+
+            .worm-stage {
+                position: relative;
+                min-height: 70vh;
+            }
+
+            .worm-glyph {
+                stroke-dasharray: none !important;
                 stroke-dashoffset: 0 !important;
             }
-        }
-        }
 
-        .hero-subtitle {
-            margin: 0;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: clamp(0.78rem, 1.5vw, 1rem);
-            font-weight: 400;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-        }
-
-        @media (max-width: 640px) {
-            .hero-wordmark {
-                letter-spacing: 0.04em;
-                transform: scaleX(1.02);
+            .worm-head,
+            .worm-progress {
+                display: none;
             }
 
-            .hero-subtitle {
-                letter-spacing: 0.11em;
+            .worm-subtitle {
+                opacity: 1 !important;
+                transform: none !important;
+                color: rgba(255,255,255,0.9);
             }
         }
+
         .glass-card {
             background: rgba(10, 20, 40, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -309,27 +348,116 @@
         <main>
             <!-- Header/Intro -->
             <section id="header" class="section-container text-center">
-                <div class="worm-draw" aria-label="Sourav Ghosh">
-                    <svg viewBox="0 0 1000 180" role="img" aria-labelledby="worm-title">
-                        <title id="worm-title">Sourav Ghosh</title>
-                        <defs>
-                            <clipPath id="worm-reveal-clip" clipPathUnits="userSpaceOnUse">
-                                <rect id="worm-reveal-rect" class="worm-reveal-rect"
-                                      x="0" y="0" width="0" height="180"></rect>
-                            </clipPath>
-                        </defs>
+                <div class="worm-scroll-range">
+                    <div class="worm-stage">
+                        <div class="worm-logo-wrap">
+                            <svg id="wormLogo" viewBox="0 0 1460 220" role="img" aria-labelledby="wormLogoTitle wormLogoDesc">
+                                <title id="wormLogoTitle">Sourav Ghosh</title>
+                                <desc id="wormLogoDesc">Custom rounded monoline wordmark inspired by the NASA worm design language.</desc>
 
-                        <g clip-path="url(#worm-reveal-clip)">
-                            <text x="500" y="121"
-                                  text-anchor="middle"
-                                  font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
-                                  font-size="112"
-                                  font-weight="300"
-                                  letter-spacing="9"
-                                  fill="#ffffff">SOURAV GHOSH</text>
-                        </g>
-                    </svg>
-                    <div class="worm-draw-label">Aerospace Engineer &nbsp;&middot;&nbsp; MEXT Scholar</div>
+                                <!-- S -->
+                                <path class="worm-glyph" data-letter="S"
+                                      d="M110 62
+                                         C92 42 50 42 38 68
+                                         C24 98 52 108 78 113
+                                         C108 119 126 129 120 155
+                                         C114 184 62 187 37 164" />
+
+                                <!-- O -->
+                                <path class="worm-glyph" data-letter="O"
+                                      d="M184 112
+                                         C184 70 204 46 236 46
+                                         C268 46 288 70 288 112
+                                         C288 154 268 178 236 178
+                                         C204 178 184 154 184 112 Z" />
+
+                                <!-- U -->
+                                <path class="worm-glyph" data-letter="U"
+                                      d="M350 50
+                                         L350 132
+                                         C350 164 368 178 394 178
+                                         C420 178 438 164 438 132
+                                         L438 50" />
+
+                                <!-- R -->
+                                <path class="worm-glyph" data-letter="R"
+                                      d="M505 178
+                                         L505 50
+                                         L552 50
+                                         C582 50 598 65 598 88
+                                         C598 111 580 124 552 124
+                                         L505 124
+                                         M553 124 L608 178" />
+
+                                <!-- A: intentionally crossbar-free -->
+                                <path class="worm-glyph" data-letter="A"
+                                      d="M655 178
+                                         L699 50
+                                         C704 36 716 36 721 50
+                                         L766 178" />
+
+                                <!-- V -->
+                                <path class="worm-glyph" data-letter="V"
+                                      d="M807 50
+                                         L849 174
+                                         C853 185 864 185 868 174
+                                         L910 50" />
+
+                                <!-- G -->
+                                <path class="worm-glyph" data-letter="G"
+                                      d="M1082 75
+                                         C1068 55 1049 46 1026 46
+                                         C986 46 962 73 962 112
+                                         C962 152 986 178 1026 178
+                                         C1058 178 1080 160 1080 132
+                                         L1038 132" />
+
+                                <!-- H -->
+                                <path class="worm-glyph" data-letter="H"
+                                      d="M1141 50
+                                         L1141 178
+                                         M1224 50
+                                         L1224 178
+                                         M1141 113
+                                         C1162 106 1203 106 1224 113" />
+
+                                <!-- O -->
+                                <path class="worm-glyph" data-letter="O"
+                                      d="M1282 112
+                                         C1282 70 1302 46 1334 46
+                                         C1366 46 1386 70 1386 112
+                                         C1386 154 1366 178 1334 178
+                                         C1302 178 1282 154 1282 112 Z" />
+
+                                <!-- second-line compact S H are shifted left via transform -->
+                                <g transform="translate(-350 0)">
+                                    <path class="worm-glyph" data-letter="S"
+                                          d="M110 62
+                                             C92 42 50 42 38 68
+                                             C24 98 52 108 78 113
+                                             C108 119 126 129 120 155
+                                             C114 184 62 187 37 164"
+                                          transform="translate(1450 0)" />
+
+                                    <path class="worm-glyph" data-letter="H"
+                                          d="M1495 50
+                                             L1495 178
+                                             M1578 50
+                                             L1578 178
+                                             M1495 113
+                                             C1516 106 1557 106 1578 113" />
+                                </g>
+                            </svg>
+                        </div>
+
+                        <div id="wormSubtitle" class="worm-subtitle">
+                            Aerospace Engineer &nbsp;&middot;&nbsp; MEXT Scholar
+                        </div>
+
+                        <div class="worm-progress" aria-hidden="true">
+                            <div id="wormProgressBar" class="worm-progress-bar"></div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -504,31 +632,89 @@
   </script>
 
   <script>
-    // Scroll-driven clean left-to-right reveal.
+    // Scroll-driven custom worm logotype.
     (() => {
-      const header = document.getElementById('header');
-      const revealRect = document.getElementById('worm-reveal-rect');
-      if (!header || !revealRect) return;
-
+      const range = document.querySelector('.worm-scroll-range');
+      const paths = [...document.querySelectorAll('.worm-glyph')];
+      const subtitle = document.getElementById('wormSubtitle');
+      const progressBar = document.getElementById('wormProgressBar');
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+      if (!range || !paths.length) return;
+
+      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
       const smooth = t => t * t * (3 - 2 * t);
+
+      const glyphs = paths.map((path) => {
+        const length = path.getTotalLength();
+        path.style.strokeDasharray = String(length);
+        path.style.strokeDashoffset = String(length);
+
+        const head = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        head.setAttribute('class', 'worm-head');
+        head.setAttribute('r', '12');
+        path.parentNode.appendChild(head);
+
+        return { path, head, length };
+      });
 
       const render = () => {
         if (reduceMotion.matches) {
-          revealRect.setAttribute('width', '1000');
+          glyphs.forEach(({ path, head }) => {
+            path.style.strokeDashoffset = '0';
+            head.style.opacity = '0';
+          });
+          if (subtitle) {
+            subtitle.style.opacity = '1';
+            subtitle.style.transform = 'none';
+          }
+          if (progressBar) progressBar.style.transform = 'scaleX(1)';
           return;
         }
 
-        const rect = header.getBoundingClientRect();
-        const vh = window.innerHeight;
+        const rect = range.getBoundingClientRect();
+        const scrollable = Math.max(1, range.offsetHeight - window.innerHeight);
+        const raw = clamp(-rect.top / scrollable, 0, 1);
 
-        const start = vh * 0.96;
-        const end = vh * 0.40;
-        const raw = clamp((start - rect.top) / (start - end), 0, 1);
-        const p = smooth(raw);
+        // Drawing occupies the first 82% of the pinned interval.
+        // The remaining 18% holds the completed mark before release.
+        const master = clamp(raw / 0.82, 0, 1);
 
-        revealRect.setAttribute('width', String(1000 * p));
+        // Each glyph overlaps the next slightly, giving the impression of
+        // multiple worms evolving across the wordmark rather than a wipe.
+        const count = glyphs.length;
+        const stagger = 0.072;
+        const duration = 0.25;
+
+        glyphs.forEach(({ path, head, length }, i) => {
+          const start = i * stagger;
+          const local = smooth(clamp((master - start) / duration, 0, 1));
+          const visibleLength = length * local;
+
+          path.style.strokeDashoffset = String(length - visibleLength);
+
+          if (local > 0.015 && local < 0.995) {
+            const point = path.getPointAtLength(Math.max(0, visibleLength - 0.5));
+            head.setAttribute('cx', point.x.toFixed(2));
+            head.setAttribute('cy', point.y.toFixed(2));
+            head.style.opacity = String(Math.sin(Math.PI * local) * 0.95);
+          } else {
+            head.style.opacity = '0';
+          }
+        });
+
+        const subtitleProgress = smooth(clamp((master - 0.78) / 0.18, 0, 1));
+        if (subtitle) {
+          subtitle.style.opacity = String(subtitleProgress);
+          subtitle.style.transform =
+            'translateY(' + ((1 - subtitleProgress) * 10).toFixed(2) + 'px)';
+          subtitle.style.color =
+            'rgba(255,255,255,' + (0.34 + 0.58 * subtitleProgress).toFixed(3) + ')';
+        }
+
+        if (progressBar) {
+          progressBar.style.transform = 'scaleX(' + master.toFixed(4) + ')';
+        }
       };
 
       let raf = 0;
