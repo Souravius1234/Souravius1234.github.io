@@ -99,6 +99,23 @@
             text-shadow: none;
             transform: scaleX(1.06);
             transform-origin: center;
+            white-space: nowrap;
+            will-change: transform, letter-spacing, color;
+        }
+
+        .hero-wordmark .worm-letter {
+            display: inline-block;
+            transform-origin: 50% 60%;
+            will-change: transform;
+        }
+
+        .hero-wordmark .worm-space {
+            display: inline-block;
+            width: 0.42em;
+        }
+
+        #header {
+            overflow: visible;
         }
 
         .hero-subtitle {
@@ -481,6 +498,81 @@
     sections.forEach(section => {
         observer.observe(section);
     });
+  </script>
+
+  <script>
+    // Scroll-linked NASA Worm-inspired name animation.
+    (() => {
+      const wordmark = document.querySelector('.hero-wordmark');
+      if (!wordmark) return;
+
+      const originalText = wordmark.textContent.trim();
+      wordmark.setAttribute('aria-label', originalText);
+      wordmark.innerHTML = [...originalText].map((char, index) => {
+        if (char === ' ') {
+          return '<span class="worm-space" aria-hidden="true"></span>';
+        }
+        return '<span class="worm-letter" aria-hidden="true" data-index="' + index + '">' + char + '</span>';
+      }).join('');
+
+      const letters = [...wordmark.querySelectorAll('.worm-letter')];
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const lerp = (a, b, t) => a + (b - a) * t;
+
+      const render = () => {
+        if (reduceMotion.matches) {
+          wordmark.style.color = '#f0f0f0';
+          wordmark.style.letterSpacing = '0.075em';
+          wordmark.style.transform = 'scaleX(1.06)';
+          letters.forEach(letter => letter.style.transform = 'none');
+          return;
+        }
+
+        const rect = wordmark.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const raw = (vh * 0.86 - rect.top) / (vh * 0.72);
+        const progress = clamp(raw, 0, 1);
+        const eased = progress * progress * (3 - 2 * progress);
+
+        const r = Math.round(lerp(240, 252, eased));
+        const g = Math.round(lerp(240, 61, eased));
+        const b = Math.round(lerp(240, 33, eased));
+
+        wordmark.style.color = 'rgb(' + r + ',' + g + ',' + b + ')';
+        wordmark.style.letterSpacing = lerp(0.075, -0.018, eased) + 'em';
+        wordmark.style.transform =
+          'translateY(' + lerp(0, -18, eased) + 'px) scaleX(' + lerp(1.06, 1.22, eased) + ')';
+
+        letters.forEach((letter, i) => {
+          const phase = (i * 0.72) + (progress * Math.PI * 2.2);
+          const wave = Math.sin(phase) * 11 * eased;
+          const twist = Math.cos(phase) * 2.2 * eased;
+          const localStretch = 1 + (0.06 * Math.sin(phase + 0.8) * eased);
+
+          letter.style.transform =
+            'translateY(' + wave.toFixed(2) + 'px) ' +
+            'rotate(' + twist.toFixed(2) + 'deg) ' +
+            'scaleX(' + localStretch.toFixed(3) + ')';
+        });
+      };
+
+      let ticking = false;
+      const requestRender = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          render();
+          ticking = false;
+        });
+      };
+
+      render();
+      window.addEventListener('scroll', requestRender, { passive: true });
+      window.addEventListener('resize', requestRender);
+      reduceMotion.addEventListener?.('change', requestRender);
+    })();
   </script>
 </body>
 </html>
