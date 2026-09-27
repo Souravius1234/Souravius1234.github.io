@@ -105,8 +105,9 @@
 
         .hero-wordmark .worm-letter {
             display: inline-block;
-            transform-origin: 50% 60%;
-            will-change: transform;
+            position: relative;
+            transform-origin: 50% 50%;
+            will-change: transform, filter, opacity;
         }
 
         .hero-wordmark .worm-space {
@@ -116,6 +117,59 @@
 
         #header {
             overflow: visible;
+            isolation: isolate;
+        }
+
+        .worm-sequence-field {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: #ed1c24;
+            opacity: 0;
+            will-change: opacity;
+        }
+
+        .worm-trail-layer {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        .worm-trail-copy {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin: 0;
+            font: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            white-space: nowrap;
+            color: rgba(255,255,255,0.88);
+            transform-origin: center;
+            will-change: transform, filter, opacity;
+            user-select: none;
+        }
+
+        .hero-wordmark.worm-sequence-active {
+            color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-wordmark.worm-sequence-active .worm-letter {
+            color: #fff;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .worm-sequence-field,
+            .worm-trail-layer {
+                display: none;
+            }
         }
 
         .hero-subtitle {
@@ -209,6 +263,7 @@
 <body class="bg-black">
     <!-- This canvas is where the 3D animation will be rendered. -->
     <canvas id="bg-canvas"></canvas>
+    <div id="worm-sequence-field" class="worm-sequence-field" aria-hidden="true"></div>
 
     <!-- Header and Navigation Bar -->
     <header class="site-header">
@@ -501,13 +556,16 @@
   </script>
 
   <script>
-    // Scroll-linked NASA Worm-inspired name animation.
+    // Scroll-linked title sequence inspired by the 1975 NASA Worm opening:
+    // blurred rotational afterimages collapse into a sharp white wordmark on red.
     (() => {
       const wordmark = document.querySelector('.hero-wordmark');
-      if (!wordmark) return;
+      const field = document.getElementById('worm-sequence-field');
+      if (!wordmark || !field) return;
 
       const originalText = wordmark.textContent.trim();
       wordmark.setAttribute('aria-label', originalText);
+
       wordmark.innerHTML = [...originalText].map((char, index) => {
         if (char === ' ') {
           return '<span class="worm-space" aria-hidden="true"></span>';
@@ -518,43 +576,99 @@
       const letters = [...wordmark.querySelectorAll('.worm-letter')];
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const trailLayer = document.createElement('div');
+      trailLayer.className = 'worm-trail-layer';
+      trailLayer.setAttribute('aria-hidden', 'true');
+      wordmark.parentElement.appendChild(trailLayer);
+
+      const trailCount = 8;
+      const trails = [];
+      for (let i = 0; i < trailCount; i++) {
+        const copy = document.createElement('div');
+        copy.className = 'worm-trail-copy';
+        copy.textContent = originalText;
+        trailLayer.appendChild(copy);
+        trails.push(copy);
+      }
+
+      const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
       const lerp = (a, b, t) => a + (b - a) * t;
+      const smooth = t => t * t * (3 - 2 * t);
 
       const render = () => {
         if (reduceMotion.matches) {
-          wordmark.style.color = '#f0f0f0';
-          wordmark.style.letterSpacing = '0.075em';
+          field.style.opacity = '0';
+          wordmark.classList.remove('worm-sequence-active');
           wordmark.style.transform = 'scaleX(1.06)';
-          letters.forEach(letter => letter.style.transform = 'none');
+          wordmark.style.letterSpacing = '0.075em';
+          letters.forEach(letter => {
+            letter.style.transform = 'none';
+            letter.style.filter = 'none';
+            letter.style.opacity = '1';
+          });
+          trails.forEach(t => t.style.opacity = '0');
           return;
         }
 
         const rect = wordmark.getBoundingClientRect();
         const vh = window.innerHeight;
-        const raw = (vh * 0.86 - rect.top) / (vh * 0.72);
-        const progress = clamp(raw, 0, 1);
-        const eased = progress * progress * (3 - 2 * progress);
 
-        const r = Math.round(lerp(240, 252, eased));
-        const g = Math.round(lerp(240, 61, eased));
-        const b = Math.round(lerp(240, 33, eased));
+        // Sequence begins as the title rises into the lower half of the viewport
+        // and finishes shortly after it crosses the center.
+        const raw = (vh * 0.92 - rect.top) / (vh * 0.72);
+        const p = clamp(raw, 0, 1);
+        const e = smooth(p);
 
-        wordmark.style.color = 'rgb(' + r + ',' + g + ',' + b + ')';
-        wordmark.style.letterSpacing = lerp(0.075, -0.018, eased) + 'em';
+        // Red field fades up quickly, remains through the convergence,
+        // then recedes as the resolved title moves toward the content.
+        const fieldIn = clamp(p / 0.22, 0, 1);
+        const fieldOut = clamp((1 - p) / 0.12, 0, 1);
+        const fieldOpacity = Math.min(fieldIn, p < 0.88 ? 1 : fieldOut);
+        field.style.opacity = String(fieldOpacity * 0.94);
+
+        wordmark.classList.toggle('worm-sequence-active', p > 0.02 && p < 0.99);
+
+        // The final wordmark resolves from compressed/soft to crisp.
+        wordmark.style.letterSpacing = lerp(0.025, 0.075, e) + 'em';
         wordmark.style.transform =
-          'translateY(' + lerp(0, -18, eased) + 'px) scaleX(' + lerp(1.06, 1.22, eased) + ')';
+          'translateY(' + lerp(20, 0, e).toFixed(2) + 'px) ' +
+          'scaleX(' + lerp(0.86, 1.06, e).toFixed(3) + ')';
 
         letters.forEach((letter, i) => {
-          const phase = (i * 0.72) + (progress * Math.PI * 2.2);
-          const wave = Math.sin(phase) * 11 * eased;
-          const twist = Math.cos(phase) * 2.2 * eased;
-          const localStretch = 1 + (0.06 * Math.sin(phase + 0.8) * eased);
-
+          const phase = i * 0.52;
+          const orbit = (1 - e);
+          const angle = (1 - e) * (Math.PI * 2.25) + phase;
+          const radiusX = 42 * orbit;
+          const radiusY = 26 * orbit;
+          const x = Math.cos(angle) * radiusX;
+          const y = Math.sin(angle) * radiusY;
+          const rot = Math.sin(angle + phase) * 24 * orbit;
           letter.style.transform =
-            'translateY(' + wave.toFixed(2) + 'px) ' +
-            'rotate(' + twist.toFixed(2) + 'deg) ' +
-            'scaleX(' + localStretch.toFixed(3) + ')';
+            'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) ' +
+            'rotate(' + rot.toFixed(2) + 'deg)';
+          letter.style.filter = 'blur(' + lerp(7, 0, e).toFixed(2) + 'px)';
+          letter.style.opacity = String(lerp(0.42, 1, e));
+        });
+
+        // Layered ghost copies create the smeared rotational "fan" visible
+        // in the original title sequence. Each copy lags farther behind.
+        trails.forEach((trail, i) => {
+          const lag = (i + 1) / trailCount;
+          const q = clamp(e - lag * 0.075, 0, 1);
+          const remain = 1 - q;
+          const angle = remain * (Math.PI * (2.7 + lag * 0.8)) + lag * 1.4;
+          const radius = 70 + lag * 120;
+          const x = Math.cos(angle) * radius * remain;
+          const y = Math.sin(angle) * radius * 0.62 * remain;
+          const rot = (1 - q) * (150 + lag * 110);
+
+          trail.style.transform =
+            'translate(-50%, -50%) ' +
+            'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) ' +
+            'rotate(' + rot.toFixed(2) + 'deg) ' +
+            'scale(' + lerp(1.18 + lag * 0.2, 1, q).toFixed(3) + ')';
+          trail.style.filter = 'blur(' + lerp(16 + lag * 8, 1.5, q).toFixed(2) + 'px)';
+          trail.style.opacity = String((1 - q) * (0.24 - lag * 0.012) * fieldOpacity);
         });
       };
 
