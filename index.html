@@ -100,7 +100,7 @@
 
         .worm-scroll-range {
             position: relative;
-            height: 340vh;
+            height: 440vh;
         }
 
         .worm-stage {
@@ -175,7 +175,7 @@
 
         @media (max-width: 720px) {
             .worm-scroll-range {
-                height: 280vh;
+                height: 360vh;
             }
 
             .worm-stage {
@@ -652,15 +652,15 @@
       scene.add(model);
 
       // Map the entire page scroll to one controlled approach toward Saturn.
-      // The camera reaches its closest point only at the bottom of the page.
+      // At the bottom, stop near Endurance's docking area rather than passing it toward Saturn.
       const updateScrollScene = () => {
         const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
         const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-        const virtualScroll = -progress * (145 / 0.045);
+        const virtualScroll = -progress * (85 / 0.045);
         model.rotation.z = Math.PI / 1.5;
         model.rotation.x = virtualScroll * 0.0003;
         model.position.y = virtualScroll * 0.0015;
-        camera.position.z = 125 - 145 * progress;
+        camera.position.z = 125 - 85 * progress;
       };
       window.addEventListener('scroll', updateScrollScene, { passive: true });
       window.addEventListener('resize', updateScrollScene);
@@ -744,9 +744,9 @@
         const scrollable = Math.max(1, range.offsetHeight - window.innerHeight);
         const raw = clamp(-rect.top / scrollable, 0, 1);
 
-        // Drawing occupies the first 82% of the pinned interval.
-        // The remaining 18% holds the completed mark before release.
-        const master = clamp(raw / 0.82, 0, 1);
+        // Draw gradually through 90% of the longer pinned interval.
+        // Hold the completed mark for the final 10%.
+        const master = clamp(raw / 0.90, 0, 1);
 
         // Every glyph starts at the same time and reaches its final
         // geometry at the same time.
