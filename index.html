@@ -656,11 +656,11 @@
       const updateScrollScene = () => {
         const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
         const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-        const virtualScroll = -progress * (100 / 0.045);
+        const virtualScroll = -progress * (115 / 0.045);
         model.rotation.z = Math.PI / 1.5;
         model.rotation.x = virtualScroll * 0.0003;
         model.position.y = virtualScroll * 0.0015;
-        camera.position.z = 125 - 100 * progress;
+        camera.position.z = 125 - 115 * progress;
       };
       window.addEventListener('scroll', updateScrollScene, { passive: true });
       window.addEventListener('resize', updateScrollScene);
