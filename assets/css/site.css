@@ -102,9 +102,8 @@ p {
 
 .site-logo img {
   height: 62px;
-  width: auto;
+  width: 62px;
   object-fit: contain;
-  filter: brightness(1.35);
 }
 
 .site-nav {
