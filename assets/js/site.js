@@ -21,14 +21,14 @@ class SiteHeader extends HTMLElement {
 
     const navLinks = links.map(([key, label, href]) => {
       const currentAttr = key === current ? ' aria-current="page"' : '';
-      const externalAttr = ' target="_blank" rel="noopener noreferrer"';
+      const externalAttr = key === 'cv' ? ' target="_blank" rel="noopener noreferrer"' : '';
       return `<a href="${href}"${currentAttr}${externalAttr}>${label}</a>`;
     }).join('');
 
     this.innerHTML = `
       <header class="site-header">
         <div class="site-nav-shell">
-          <a class="site-logo" href="${joinPath(root, 'index.html')}" target="_blank" rel="noopener noreferrer" aria-label="Sourav Ghosh home">
+          <a class="site-logo" href="${joinPath(root, 'index.html')}" aria-label="Sourav Ghosh home">
             <img src="${joinPath(root, 'images/Yin_and_Yang_symbol.svg')}" alt="Yin-Yang logo">
           </a>
           <nav class="site-nav" aria-label="Primary navigation">${navLinks}</nav>
