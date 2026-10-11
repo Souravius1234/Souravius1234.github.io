@@ -14,6 +14,7 @@ class SiteHeader extends HTMLElement {
       ['about', 'About Me', joinPath(root, 'about.html')],
       ['research', 'Research', joinPath(root, 'research.html')],
       ['projects', 'Projects', joinPath(root, 'projects.html')],
+      ['blog', 'Blog', joinPath(root, 'blog.html')],
       ['contact', 'Contact', joinPath(root, 'contact.html')],
       ['cv', 'CV', joinPath(root, 'Docs/sourav_cv_2025.pdf')]
     ];
@@ -28,7 +29,7 @@ class SiteHeader extends HTMLElement {
       <header class="site-header">
         <div class="site-nav-shell">
           <a class="site-logo" href="${joinPath(root, 'index.html')}" aria-label="Sourav Ghosh home">
-            <img src="${joinPath(root, 'images/SGLogodark.png')}" alt="Sourav Ghosh logo">
+            <img src="${joinPath(root, 'images/Yin_and_Yang_symbol.svg')}" alt="Yin-Yang logo">
           </a>
           <nav class="site-nav" aria-label="Primary navigation">${navLinks}</nav>
           <button class="mobile-menu-button" type="button" aria-expanded="false" aria-controls="mobile-navigation">Menu</button>
