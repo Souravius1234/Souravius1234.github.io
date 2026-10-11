@@ -42,3 +42,11 @@ Insert a `<figure>` between paragraphs:
 The shared stylesheet sizes figures responsively, centers the images, and displays smaller muted captions. Number figures sequentially; credit the image creator or source when appropriate. Provide descriptive `alt` text for accessibility (use `alt=""` for purely decorative images).
 
 The article template uses `images/my-photo.jpg` as a placeholder: replace it with the path to an actual image before publishing, or remove the example figure. Do not nest a `<figure>` inside a `<p>`.
+
+## Article comments
+
+The blog uses [Utterances](https://utteranc.es/) to host article comments on GitHub Issues, with a matching dark theme. The comment widget is already in `blog/article-template.html` and `blog/mext-article.html`; keep it directly after `</article>` in each new article, before `</main>`.
+
+**Required one-time setup:** Install the [Utterances GitHub App](https://github.com/apps/utterances) and grant it access to `Souravius1234/Souravius1234.github.io`. Ensure GitHub Issues is enabled for that public repository. The widget cannot create or receive comments before the app is installed.
+
+Comments are mapped using `issue-term="pathname"`, so each published article path has a separate GitHub issue. The first comment can create its issue automatically. Readers need a GitHub account to comment; comments and usernames will be public on GitHub. You can moderate comments by managing or locking their corresponding Issues. Because the mapping uses the page pathname, avoid renaming an article after comments have been posted.
