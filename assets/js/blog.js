@@ -27,6 +27,8 @@ const render = (posts, category) => {
   for (const post of selected) {
     const anchor = make('a', 'glass-card blog-entry');
     anchor.href = 'blog/' + encodeURIComponent(post.slug) + '.html';
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
     const meta = make('div', 'blog-entry-meta');
     meta.append(make('time', '', formatDate(post.date)), make('span', '', '·'), make('span', '', post.category));
     meta.firstChild.dateTime = post.date;
