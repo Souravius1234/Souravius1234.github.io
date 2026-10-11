@@ -51,3 +51,21 @@
 .reference-arrow { flex:0 0 auto; font-size:1.1rem; color:#98b0cd; transition:color .2s ease,transform .2s ease; }
 .reference-card:hover .reference-arrow,.reference-card:focus-visible .reference-arrow { color:#fff; transform:translate(2px,-2px); }
 @media(prefers-reduced-motion:reduce) { .blog-article .reference-card,.reference-arrow,.blog-article a { transition:none; } .blog-article .reference-card:hover { transform:none; } }
+
+/* Visible raised link marker for inline article links, excluding full-card links and back navigation */
+.blog-article a:not(.reference-card):not(.blog-back)::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: .24em;
+  font-size: .76em;
+  line-height: 1;
+  vertical-align: super;
+  color: #b9cee7;
+  text-decoration: none;
+  transition: color .2s ease, text-shadow .2s ease;
+}
+.blog-article a:not(.reference-card):not(.blog-back):hover::after,
+.blog-article a:not(.reference-card):not(.blog-back):focus-visible::after {
+  color: #fff;
+  text-shadow: 0 0 9px rgba(180,215,255,.8);
+}
