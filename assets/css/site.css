@@ -226,6 +226,13 @@ p {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.glass-card:hover, .glass-card:focus-within {
+  background: rgba(255, 255, 255, .09);
+  border-color: rgba(255, 255, 255, .95);
+  box-shadow: 0 0 15px rgba(255,255,255,.9), 0 0 40px rgba(255,255,255,.65), 0 0 80px rgba(255,255,255,.35);
 }
 
 .glass-card h2,
