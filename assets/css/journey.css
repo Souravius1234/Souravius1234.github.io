@@ -36,3 +36,7 @@
 .journey-with-photo.is-active .journey-photo { box-shadow:inset 0 0 12px rgba(255,255,255,.12),0 0 8px rgba(255,255,255,.25); }
 @media(max-width:700px) { .journey-with-photo { grid-template-columns:1fr; row-gap:.85rem; } .journey-photo { max-width:450px; } }
 @media(prefers-reduced-motion:reduce) { .journey-photo { opacity:1; transform:none; transition:none; } }
+
+/* Graduation video uses the same scroll-reveal frame as milestone photography. */
+.journey-video video { display:block; width:100%; aspect-ratio:4/3; object-fit:contain; background:#000; border-radius:.65rem; }
+.journey-video:focus-within { opacity:1; transform:none; }
