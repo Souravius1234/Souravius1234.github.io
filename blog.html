@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Articles and notes by Sourav Ghosh on space engineering, research, and related ideas.">
+  <title>Blog | Sourav Ghosh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/blog.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js"}}</script>
+  <script type="module" src="assets/js/site.js"></script>
+  <script type="module" src="assets/js/blog.js"></script>
+</head>
+<body>
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <site-header root="." current="blog"></site-header>
+  <main class="page-shell">
+    <section class="page-hero">
+      <h1>Blog</h1>
+      <p>Articles, technical notes, and perspectives on astrodynamics, space systems, and research.</p>
+    </section>
+    <section class="section-container" aria-label="Articles">
+      <div class="blog-toolbar">
+        <h2 class="section-title">Articles</h2>
+        <label class="blog-filter-label" for="blog-category">Category
+          <select id="blog-category"><option value="all">All topics</option></select>
+        </label>
+      </div>
+      <div id="blog-posts" class="blog-list" aria-live="polite">
+        <p class="text-muted">Loading articles…</p>
+      </div>
+    </section>
+  </main>
+  <site-footer></site-footer>
+  <script type="module" src="assets/js/starfield.js"></script>
+</body>
+</html>
