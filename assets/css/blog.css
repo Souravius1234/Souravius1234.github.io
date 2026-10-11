@@ -19,3 +19,8 @@
 .blog-article a { color:var(--accent); }
 .blog-back { color:var(--accent); text-decoration:none; }
 @media(max-width:600px) { .blog-article { padding-top:2rem; } .blog-toolbar { align-items:flex-start; } .blog-filter-label { width:100%; justify-content:space-between; } }
+
+/* Captioned figures in blog articles */
+.blog-article .blog-figure { margin:2rem 0; }
+.blog-article .blog-figure img { display:block; max-width:100%; width:auto; height:auto; margin:0 auto; border-radius:.65rem; }
+.blog-article .blog-figure figcaption { margin:.7rem auto 0; max-width:100%; color:var(--muted); font-size:.9rem; line-height:1.55; text-align:center; }
