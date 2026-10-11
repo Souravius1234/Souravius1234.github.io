@@ -119,27 +119,20 @@
             width: min(94vw, 1380px);
         }
 
-        #wormLogo {
-            display: block;
-            width: 100%;
-            height: auto;
-            overflow: visible;
-        }
-
-        .worm-glyph {
-            fill: none;
-            stroke: #ffffff;
-            stroke-width: 28;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            vector-effect: non-scaling-stroke;
-            will-change: stroke-dashoffset, opacity;
-        }
-
-        .worm-head {
-            fill: #ffffff;
-            pointer-events: none;
-            opacity: 0;
+        .worm-name {
+            margin: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 300;
+            font-size: clamp(2.2rem, 8.5vw, 8.2rem);
+            letter-spacing: -0.045em;
+            line-height: 1.08;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            clip-path: inset(0 100% 0 0);
+            will-change: clip-path;
+            text-shadow: 0 0 12px rgba(255,255,255,.14);
         }
 
         .worm-subtitle {
@@ -187,8 +180,9 @@
                 width: 98vw;
             }
 
-            .worm-glyph {
-                stroke-width: 22;
+            .worm-name {
+                font-size: clamp(2rem, 9vw, 4.4rem);
+                letter-spacing: -0.055em;
             }
 
             .worm-subtitle {
@@ -207,12 +201,10 @@
                 min-height: 70vh;
             }
 
-            .worm-glyph {
-                stroke-dasharray: none !important;
-                stroke-dashoffset: 0 !important;
+            .worm-name {
+                clip-path: none !important;
             }
 
-            .worm-head,
             .worm-progress {
                 display: none;
             }
@@ -396,70 +388,7 @@
                 <div class="worm-scroll-range">
                     <div class="worm-stage">
                         <div class="worm-logo-wrap">
-                            <svg id="wormLogo" viewBox="0 0 2180 270" role="img" aria-labelledby="wormLogoTitle wormLogoDesc">
-                                <title id="wormLogoTitle">Sourav Ghosh</title>
-                                <desc id="wormLogoDesc">White custom vector lettering based on the supplied SOURAV GHOSH worm-style SVG.</desc>
-
-                                <g transform="translate(24 22)">
-                                    <path class="worm-glyph" data-letter="S"
-                                          d="M135 22 H72 C38 22 18 42 18 70 C18 96 38 111 70 111 H103 C136 111 154 128 154 155 C154 184 132 204 96 204 H22" />
-                                </g>
-
-                                <g transform="translate(214 22)">
-                                    <path class="worm-glyph" data-letter="O"
-                                          d="M80 20 C38 20 18 52 18 113 C18 174 38 206 80 206 C122 206 142 174 142 113 C142 52 122 20 80 20 Z" />
-                                </g>
-
-                                <g transform="translate(392 22)">
-                                    <path class="worm-glyph" data-letter="U"
-                                          d="M18 20 V145 C18 185 39 206 77 206 C115 206 136 185 136 145 V20" />
-                                </g>
-
-                                <g transform="translate(566 22)">
-                                    <path class="worm-glyph" data-letter="R"
-                                          d="M18 206 V20 H77 C118 20 140 38 140 70 C140 102 118 120 77 120 H18
-                                             M78 120 L146 206" />
-                                </g>
-
-                                <g transform="translate(748 22)">
-                                    <path class="worm-glyph" data-letter="A"
-                                          d="M18 206 L76 20 L136 206" />
-                                </g>
-
-                                <g transform="translate(922 22)">
-                                    <path class="worm-glyph" data-letter="V"
-                                          d="M18 20 L77 206 L136 20" />
-                                </g>
-
-                                <g transform="translate(1219 22)">
-                                    <path class="worm-glyph" data-letter="G"
-                                          d="M145 62 C135 34 111 20 79 20 C37 20 18 52 18 113 C18 174 38 206 82 206 C120 206 145 183 145 145 V126 H96" />
-                                </g>
-
-                                <g transform="translate(1410 22)">
-                                    <path class="worm-glyph" data-letter="H"
-                                          d="M18 20 V206
-                                             M136 20 V206
-                                             M18 112 H136" />
-                                </g>
-
-                                <g transform="translate(1592 22)">
-                                    <path class="worm-glyph" data-letter="O"
-                                          d="M80 20 C38 20 18 52 18 113 C18 174 38 206 80 206 C122 206 142 174 142 113 C142 52 122 20 80 20 Z" />
-                                </g>
-
-                                <g transform="translate(1780 22)">
-                                    <path class="worm-glyph" data-letter="S"
-                                          d="M135 22 H72 C38 22 18 42 18 70 C18 96 38 111 70 111 H103 C136 111 154 128 154 155 C154 184 132 204 96 204 H22" />
-                                </g>
-
-                                <g transform="translate(1978 22)">
-                                    <path class="worm-glyph" data-letter="H"
-                                          d="M18 20 V206
-                                             M136 20 V206
-                                             M18 112 H136" />
-                                </g>
-                            </svg>
+                            <h1 id="wormName" class="worm-name">Sourav Ghosh</h1>
                         </div>
 
                         <div id="wormSubtitle" class="worm-subtitle">
@@ -700,99 +629,46 @@
   </script>
 
   <script>
-    // Scroll-driven custom worm logotype.
+    // Slow scroll-driven Helvetica wordmark reveal.
     (() => {
       const range = document.querySelector('.worm-scroll-range');
-      const paths = [...document.querySelectorAll('.worm-glyph')];
+      const name = document.getElementById('wormName');
       const subtitle = document.getElementById('wormSubtitle');
       const progressBar = document.getElementById('wormProgressBar');
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-      if (!range || !paths.length) return;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (!range || !name) return;
 
       const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
       const smooth = t => t * t * (3 - 2 * t);
 
-      const glyphs = paths.map((path) => {
-        const length = path.getTotalLength();
-        path.style.strokeDasharray = String(length);
-        path.style.strokeDashoffset = String(length);
-
-        const head = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        head.setAttribute('class', 'worm-head');
-        head.setAttribute('r', '12');
-        path.parentNode.appendChild(head);
-
-        return { path, head, length };
-      });
-
-      const render = () => {
-        if (reduceMotion.matches) {
-          glyphs.forEach(({ path, head }) => {
-            path.style.strokeDashoffset = '0';
-            head.style.opacity = '0';
-          });
-          if (subtitle) {
-            subtitle.style.opacity = '1';
-            subtitle.style.transform = 'none';
-          }
+      function render() {
+        if (reducedMotion.matches) {
+          name.style.clipPath = 'none';
+          if (subtitle) { subtitle.style.opacity = '1'; subtitle.style.transform = 'none'; }
           if (progressBar) progressBar.style.transform = 'scaleX(1)';
           return;
         }
-
-        const rect = range.getBoundingClientRect();
-        const scrollable = Math.max(1, range.offsetHeight - window.innerHeight);
-        const raw = clamp(-rect.top / scrollable, 0, 1);
-
-        // Draw gradually through 90% of the longer pinned interval.
-        // Hold the completed mark for the final 10%.
-        const master = clamp(raw / 0.90, 0, 1);
-
-        // Every glyph starts at the same time and reaches its final
-        // geometry at the same time.
-        glyphs.forEach(({ path, head, length }) => {
-          const local = smooth(master);
-          const visibleLength = length * local;
-
-          path.style.strokeDashoffset = String(length - visibleLength);
-
-          if (local > 0.015 && local < 0.995) {
-            const point = path.getPointAtLength(Math.max(0, visibleLength - 0.5));
-            head.setAttribute('cx', point.x.toFixed(2));
-            head.setAttribute('cy', point.y.toFixed(2));
-            head.style.opacity = String(Math.sin(Math.PI * local) * 0.95);
-          } else {
-            head.style.opacity = '0';
-          }
-        });
-
+        const scrollable = Math.max(1, range.offsetHeight - innerHeight);
+        const raw = clamp(-range.getBoundingClientRect().top / scrollable, 0, 1);
+        const master = smooth(clamp(raw / 0.90, 0, 1));
+        name.style.clipPath = 'inset(0 ' + ((1 - master) * 100).toFixed(3) + '% 0 0)';
         const subtitleProgress = smooth(clamp((master - 0.82) / 0.18, 0, 1));
         if (subtitle) {
           subtitle.style.opacity = String(subtitleProgress);
-          subtitle.style.transform =
-            'translateY(' + ((1 - subtitleProgress) * 10).toFixed(2) + 'px)';
-          subtitle.style.color =
-            'rgba(255,255,255,' + (0.34 + 0.58 * subtitleProgress).toFixed(3) + ')';
+          subtitle.style.transform = 'translateY(' + ((1 - subtitleProgress) * 10).toFixed(2) + 'px)';
+          subtitle.style.color = 'rgba(255,255,255,' + (0.34 + 0.58 * subtitleProgress).toFixed(3) + ')';
         }
-
-        if (progressBar) {
-          progressBar.style.transform = 'scaleX(' + master.toFixed(4) + ')';
-        }
-      };
-
+        if (progressBar) progressBar.style.transform = 'scaleX(' + master.toFixed(4) + ')';
+      }
       let raf = 0;
-      const schedule = () => {
+      function schedule() {
         if (raf) return;
-        raf = requestAnimationFrame(() => {
-          raf = 0;
-          render();
-        });
-      };
-
+        raf = requestAnimationFrame(() => { raf = 0; render(); });
+      }
       render();
-      window.addEventListener('scroll', schedule, { passive: true });
-      window.addEventListener('resize', schedule);
-      reduceMotion.addEventListener?.('change', schedule);
+      addEventListener('scroll', schedule, { passive: true });
+      addEventListener('resize', schedule);
+      reducedMotion.addEventListener?.('change', schedule);
     })();
   </script>
 </body>
