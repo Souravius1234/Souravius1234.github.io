@@ -119,20 +119,20 @@
             width: min(94vw, 1380px);
         }
 
-        .worm-name {
-            margin: 0;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-weight: 300;
-            font-size: clamp(2.2rem, 8.5vw, 8.2rem);
-            letter-spacing: -0.045em;
-            line-height: 1.08;
-            color: #fff;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            clip-path: inset(0 100% 0 0);
-            will-change: clip-path;
-            text-shadow: 0 0 12px rgba(255,255,255,.14);
+        .worm-name-svg { display:block; width:100%; height:auto; overflow:visible; }
+        .worm-letter {
+            font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+            font-weight:300;
+            font-size:164px;
+            letter-spacing:-.025em;
+            stroke:#fff;
+            stroke-width:2.2px;
+            stroke-linejoin:round;
+            paint-order:stroke fill;
+            fill:#fff;
+            fill-opacity:0;
+            stroke-dasharray:900;
+            stroke-dashoffset:900;
         }
 
         .worm-subtitle {
@@ -180,10 +180,7 @@
                 width: 98vw;
             }
 
-            .worm-name {
-                font-size: clamp(2rem, 9vw, 4.4rem);
-                letter-spacing: -0.055em;
-            }
+            .worm-logo-wrap { width:98vw; }
 
             .worm-subtitle {
                 letter-spacing: 0.12em;
@@ -201,9 +198,7 @@
                 min-height: 70vh;
             }
 
-            .worm-name {
-                clip-path: none !important;
-            }
+            .worm-letter { stroke-dashoffset:0 !important; fill-opacity:1 !important; }
 
             .worm-progress {
                 display: none;
@@ -388,7 +383,9 @@
                 <div class="worm-scroll-range">
                     <div class="worm-stage">
                         <div class="worm-logo-wrap">
-                            <h1 id="wormName" class="worm-name">Sourav Ghosh</h1>
+                            <svg id="wormName" class="worm-name-svg" viewBox="0 0 1500 210" role="img" aria-label="Sourav Ghosh">
+                                <text x="750" y="160" text-anchor="middle"><tspan class="worm-letter">S</tspan><tspan class="worm-letter">o</tspan><tspan class="worm-letter">u</tspan><tspan class="worm-letter">r</tspan><tspan class="worm-letter">a</tspan><tspan class="worm-letter">v</tspan><tspan> </tspan><tspan class="worm-letter">G</tspan><tspan class="worm-letter">h</tspan><tspan class="worm-letter">o</tspan><tspan class="worm-letter">s</tspan><tspan class="worm-letter">h</tspan></text>
+                            </svg>
                         </div>
 
                         <div id="wormSubtitle" class="worm-subtitle">
@@ -633,6 +630,7 @@
     (() => {
       const range = document.querySelector('.worm-scroll-range');
       const name = document.getElementById('wormName');
+      const letters = [...name.querySelectorAll('.worm-letter')];
       const subtitle = document.getElementById('wormSubtitle');
       const progressBar = document.getElementById('wormProgressBar');
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -643,7 +641,7 @@
 
       function render() {
         if (reducedMotion.matches) {
-          name.style.clipPath = 'none';
+          letters.forEach(letter => { letter.style.strokeDashoffset = '0'; letter.style.fillOpacity = '1'; });
           if (subtitle) { subtitle.style.opacity = '1'; subtitle.style.transform = 'none'; }
           if (progressBar) progressBar.style.transform = 'scaleX(1)';
           return;
@@ -651,7 +649,13 @@
         const scrollable = Math.max(1, range.offsetHeight - innerHeight);
         const raw = clamp(-range.getBoundingClientRect().top / scrollable, 0, 1);
         const master = smooth(clamp(raw / 0.90, 0, 1));
-        name.style.clipPath = 'inset(0 ' + ((1 - master) * 100).toFixed(3) + '% 0 0)';
+        // Outline each Helvetica glyph together, then reveal the solid letters.
+        const outline = smooth(clamp(master / 0.84, 0, 1));
+        const solid = smooth(clamp((master - 0.62) / 0.38, 0, 1));
+        letters.forEach(letter => {
+          letter.style.strokeDashoffset = String(900 * (1 - outline));
+          letter.style.fillOpacity = String(solid);
+        });
         const subtitleProgress = smooth(clamp((master - 0.82) / 0.18, 0, 1));
         if (subtitle) {
           subtitle.style.opacity = String(subtitleProgress);
