@@ -30,3 +30,8 @@
 .blog-comments h2 { margin:0 0 .35rem; font-size:clamp(1.45rem,3vw,1.85rem); font-weight:500; }
 .blog-comments > p { color:var(--muted); margin:0 0 1.5rem; }
 .blog-comments .utterances { max-width:100%; }
+
+/* References and resource lists */
+.blog-article .blog-references { margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border); }
+.blog-article .blog-references ol,.blog-article > ol { padding-left:1.5rem; }
+.blog-article .blog-references li,.blog-article > ol li { margin-bottom:.8rem; overflow-wrap:anywhere; }
