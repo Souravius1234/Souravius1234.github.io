@@ -24,3 +24,9 @@
 .blog-article .blog-figure { margin:2rem 0; }
 .blog-article .blog-figure img { display:block; max-width:100%; width:auto; height:auto; margin:0 auto; border-radius:.65rem; }
 .blog-article .blog-figure figcaption { margin:.7rem auto 0; max-width:100%; color:var(--muted); font-size:.9rem; line-height:1.55; text-align:center; }
+
+/* GitHub-backed article comments */
+.blog-comments { max-width:760px; margin:0 auto 4rem; padding:2rem 0 0; border-top:1px solid var(--border); }
+.blog-comments h2 { margin:0 0 .35rem; font-size:clamp(1.45rem,3vw,1.85rem); font-weight:500; }
+.blog-comments > p { color:var(--muted); margin:0 0 1.5rem; }
+.blog-comments .utterances { max-width:100%; }
