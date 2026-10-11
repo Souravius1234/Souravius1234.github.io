@@ -14,6 +14,7 @@ class SiteHeader extends HTMLElement {
       ['about', 'About Me', joinPath(root, 'about.html')],
       ['research', 'Research', joinPath(root, 'research.html')],
       ['projects', 'Projects', joinPath(root, 'projects.html')],
+      ['blog', 'Blog', joinPath(root, 'blog.html')],
       ['contact', 'Contact', joinPath(root, 'contact.html')],
       ['cv', 'CV', joinPath(root, 'Docs/sourav_cv_2025.pdf')]
     ];
