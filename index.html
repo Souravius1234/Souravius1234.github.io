@@ -555,19 +555,29 @@
     pointLight.position.set(10, 20, 30);
     scene.add(ambientLight, pointLight);
 
-    // Starfield
+    // Distant starfield: never put point sprites along the moving camera path.
+    // Previously stars were scattered through a cube; a star close to the camera
+    // could grow into a screen-filling white square as the camera approached it.
+    // Place them on a distant shell and render each star at a constant pixel size.
     const starGeometry = new THREE.BufferGeometry();
     const starVertices = [];
     for (let i = 0; i < 5000; i++) {
-      const x = (Math.random() - 0.5) * 2000;
-      const y = (Math.random() - 0.5) * 2000;
-      const z = (Math.random() - 0.5) * 2000;
-      if (Math.sqrt(x*x + y*y + z*z) > 100) {
-        starVertices.push(x, y, z);
-      }
+      const azimuth = Math.random() * Math.PI * 2;
+      const zDirection = Math.random() * 2 - 1;
+      const ringRadius = Math.sqrt(1 - zDirection * zDirection);
+      const distance = 900 + Math.random() * 250;
+      starVertices.push(
+        distance * ringRadius * Math.cos(azimuth),
+        distance * ringRadius * Math.sin(azimuth),
+        distance * zDirection
+      );
     }
     starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
-    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 1 });
+    const starMaterial = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 1,
+      sizeAttenuation: false
+    });
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
 
