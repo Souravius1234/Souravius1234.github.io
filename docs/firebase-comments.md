@@ -75,14 +75,27 @@ The browser uses DOM `textContent` for submitted content (no HTML rendering).
 Visitors' email addresses are never written into comment documents. Their
 display names and the comment text are publicly visible.
 
+## Active articles and Firestore access
+
+Three blog articles have Google-authenticated discussions, each with its own
+collection under `blogPosts/<slug>/comments`:
+
+- `mext-article` (original 2026 personal scholarship journey)
+- `mext-scholarship-applications` (LinkedIn cross-post from 2025)
+- `mext-research-plan` (LinkedIn cross-post from 2026)
+
+**Important:** When new slugs are added to `firestore.rules` on GitHub,
+the public Firestore configuration does not automatically update. Open
+Firebase Console > Firestore Database > Rules, paste the latest root
+`firestore.rules` and click **Publish**. Otherwise, signed-in visitors may
+receive a permissions error when posting to the newly added articles.
+
 ## Creating another blog article
 
 1. Copy `blog/article-template.html` to `blog/NEW-SLUG.html`.
 2. Change `data-comments-post="replace-with-article-slug"` to
    `data-comments-post="NEW-SLUG"`.
-3. **Add the slug to the Firestore create rule**: currently
-   `postId == 'mext-article'` is intentionally restricted to the active post.
-   For example: `postId in ['mext-article', 'NEW-SLUG']`.
+3. Add the slug to the allowlisted `postId in [...]` in `firestore.rules`.
 4. Publish the updated Firestore rules before announcing the new article.
 
 ## Moderation and limitations
