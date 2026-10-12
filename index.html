@@ -664,6 +664,9 @@
       const subtitle = document.getElementById('wormSubtitle');
       const progressBar = document.getElementById('wormProgressBar');
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      // iPad/tablet Safari can leave glyph contours unfinished when the
+      // fixed 900-unit stroke dash is shorter than the actual text outline.
+      const tabletTouch = window.matchMedia('(min-width: 721px) and (any-pointer: coarse)');
       if (!range || !name) return;
 
       const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
@@ -671,7 +674,12 @@
 
       function render() {
         if (reducedMotion.matches) {
-          letters.forEach(letter => { letter.style.strokeDashoffset = '0'; letter.style.fillOpacity = '1'; });
+          letters.forEach(letter => {
+            letter.style.opacity = '1';
+            letter.style.strokeDasharray = 'none';
+            letter.style.strokeDashoffset = '0';
+            letter.style.fillOpacity = '1';
+          });
           if (subtitle) { subtitle.style.opacity = '1'; subtitle.style.transform = 'none'; }
           if (progressBar) progressBar.style.transform = 'scaleX(1)';
           return;
@@ -680,13 +688,22 @@
         const raw = clamp(-range.getBoundingClientRect().top / scrollable, 0, 1);
         const master = smooth(clamp(raw / 0.90, 0, 1));
         // Outline each Helvetica glyph together, then reveal the solid letters.
-        const outline = smooth(clamp(master / 0.84, 0, 1));
-        const solid = smooth(clamp((master - 0.62) / 0.38, 0, 1));
+        const isTablet = tabletTouch.matches;
+        const outlineEnd = isTablet ? 0.80 : 0.84;
+        const outline = smooth(clamp(master / outlineEnd, 0, 1));
+        // On tablet, complete every contour and hold the full outline before
+        // starting the white fill. Desktop keeps its original timing.
+        const solid = isTablet
+          ? smooth(clamp((master - 0.86) / 0.14, 0, 1))
+          : smooth(clamp((master - 0.62) / 0.38, 0, 1));
         const letterVisibility = smooth(clamp(master / 0.08, 0, 1));
         letters.forEach(letter => {
-          // Keep the wordmark completely hidden before scroll begins.
-          // SVG text stroke dashes otherwise leave stray arcs in iPad Safari.
+          // Keep the wordmark hidden until scrolling begins.
           letter.style.opacity = String(letterVisibility);
+          // Safari does not always finish contours with a 900-unit dash.
+          // At the end of the tracing phase remove dashes entirely so the
+          // COMPLETE Helvetica outline is visible before any white fill.
+          letter.style.strokeDasharray = isTablet && outline >= 1 ? 'none' : '900';
           letter.style.strokeDashoffset = String(900 * (1 - outline));
           letter.style.fillOpacity = String(solid);
         });
