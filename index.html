@@ -101,7 +101,7 @@
 
         .worm-scroll-range {
             position: relative;
-            height: 440vh;
+            height: 560vh;
         }
 
         .worm-stage {
@@ -170,7 +170,7 @@
 
         @media (max-width: 720px) {
             .worm-scroll-range {
-                height: 360vh;
+                height: 470vh;
             }
 
             .worm-stage {
@@ -686,7 +686,10 @@
         }
         const scrollable = Math.max(1, range.offsetHeight - innerHeight);
         const raw = clamp(-range.getBoundingClientRect().top / scrollable, 0, 1);
-        const master = smooth(clamp(raw / 0.90, 0, 1));
+        // Complete the original lettering/subtitle animation in the first 70%
+        // of the pinned section, then hold the finished wordmark while the
+        // visitor scrolls through the remaining 30% before the next section.
+        const master = smooth(clamp(raw / 0.70, 0, 1));
         // Outline each Helvetica glyph together, then reveal the solid letters.
         const isTablet = tabletTouch.matches;
         const outlineEnd = isTablet ? 0.80 : 0.84;
