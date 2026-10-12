@@ -9,8 +9,13 @@ Static portfolio and research website published through GitHub Pages at `souravi
 - Three.js ES modules through CDN
 - Shared vanilla JavaScript web components
 - GitHub Pages deployment from `main`
+- Optional Firebase Authentication + Firestore for Google-account blog comments
 
 No build step is required.
+
+## Blog comments
+
+The blog supports Google sign-in and threaded comments through Firebase Authentication and Firestore. Firebase is **not active until its Web app configuration and security rules are set up**. See [`docs/firebase-comments.md`](docs/firebase-comments.md) for the complete checklist. Earlier GitHub/Utterances comments remain accessible in the articles as an archive.
 
 ## Repository map
 
@@ -18,7 +23,6 @@ No build step is required.
 .
 ├── index.html                  # Custom landing page and Three.js hero
 ├── about.html                  # Canonical about page
-├── About Me.html               # Compatibility redirect to about.html
 ├── research.html               # Research catalogue
 ├── projects.html               # Project catalogue
 ├── contact.html                # Contact form and contact links
