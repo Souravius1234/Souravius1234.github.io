@@ -119,3 +119,41 @@
   .comment-replies { margin-left:.3rem; padding-left:.65rem; }
 }
 @media(prefers-reduced-motion:reduce) { .comment-button { transition:none; } }
+
+/* Cross-posts originally published on LinkedIn */
+.blog-article .blog-original-note {
+  margin: 2.8rem 0 0;
+  padding: 1.1rem 1.3rem;
+  border: 1px solid rgba(255,255,255,.14);
+  border-left: 2px solid rgba(220,235,255,.55);
+  border-radius: .75rem;
+  background: rgba(255,255,255,.025);
+  color: #b1bdcc;
+  font-size: .9rem;
+  line-height: 1.75;
+  text-align: left;
+}
+.blog-article .blog-pullquote {
+  margin: 1.8rem 0;
+  border-left: 2px solid rgba(255,255,255,.55);
+  padding: .55rem 1.2rem;
+  background: rgba(255,255,255,.025);
+  border-radius: 0 .65rem .65rem 0;
+}
+.blog-article .blog-pullquote p {
+  margin: 0;
+  font-size: 1.08rem;
+  color: #f0f5fa;
+  text-align: left;
+  font-style: italic;
+}
+.blog-comments .blog-original-comments {
+  color: #9baebf;
+  font-size: .85rem;
+  line-height: 1.7;
+  margin-top: 1.5rem;
+}
+.blog-comments .blog-original-comments a {
+  color: #e0e8f4;
+  text-underline-offset: .2em;
+}
