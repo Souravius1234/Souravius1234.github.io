@@ -30,17 +30,25 @@
       <p>Continue writing your article after the picture.</p>
     </article>
     <section class="blog-comments" aria-labelledby="comments-heading">
-      <h2 id="comments-heading">Comments</h2>
-      <p>Join the discussion using your GitHub account.</p>
-      <script src="https://utteranc.es/client.js"
-              repo="Souravius1234/Souravius1234.github.io"
-              issue-term="pathname"
-              theme="github-dark"
-              crossorigin="anonymous"
-              async></script>
+      <h2 id="comments-heading">Discussion</h2>
+      <p>Share questions and thoughts using your Google account. Replies are welcome.</p>
+      <div class="firebase-comments" data-comments-post="replace-with-article-slug">
+        <p class="comments-notice" role="status">Loading Google comments…</p>
+      </div>
+      <details class="comment-archive">
+        <summary>View earlier discussion on GitHub</summary>
+        <p>These earlier comments are preserved separately and still require GitHub to reply.</p>
+        <script src="https://utteranc.es/client.js"
+                repo="Souravius1234/Souravius1234.github.io"
+                issue-term="pathname"
+                theme="github-dark"
+                crossorigin="anonymous"
+                async></script>
+      </details>
     </section>
   </main>
   <site-footer></site-footer>
+  <script type="module" src="../assets/js/firebase-comments.js"></script>
   <script type="module" src="../assets/js/starfield.js"></script>
 </body>
 </html>
