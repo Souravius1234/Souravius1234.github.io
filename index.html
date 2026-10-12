@@ -132,6 +132,7 @@
             paint-order:stroke fill;
             fill:#fff;
             fill-opacity:0;
+            opacity:0; /* Safari can expose partial glyph strokes at zero progress */
             stroke-dasharray:900;
             stroke-dashoffset:900;
         }
@@ -199,7 +200,7 @@
                 min-height: 70vh;
             }
 
-            .worm-letter { stroke-dashoffset:0 !important; fill-opacity:1 !important; }
+            .worm-letter { opacity:1 !important; stroke-dashoffset:0 !important; fill-opacity:1 !important; }
 
             .worm-progress {
                 display: none;
@@ -681,7 +682,11 @@
         // Outline each Helvetica glyph together, then reveal the solid letters.
         const outline = smooth(clamp(master / 0.84, 0, 1));
         const solid = smooth(clamp((master - 0.62) / 0.38, 0, 1));
+        const letterVisibility = smooth(clamp(master / 0.08, 0, 1));
         letters.forEach(letter => {
+          // Keep the wordmark completely hidden before scroll begins.
+          // SVG text stroke dashes otherwise leave stray arcs in iPad Safari.
+          letter.style.opacity = String(letterVisibility);
           letter.style.strokeDashoffset = String(900 * (1 - outline));
           letter.style.fillOpacity = String(solid);
         });
