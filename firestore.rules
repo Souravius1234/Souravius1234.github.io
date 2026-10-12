@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Published discussion is publicly readable. Only authenticated Google
+    // account holders can create comments. Moderation is done in Firebase Console.
+    match /blogPosts/{postId}/comments/{commentId} {
+      allow read: if true;
+
+      allow create: if postId == 'mext-article'
+        && request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.auth.token.email_verified == true
+        && request.resource.data.keys().hasOnly([
+          'uid', 'authorName', 'body', 'parentId', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'uid', 'authorName', 'body', 'parentId', 'createdAt'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.authorName is string
+        && request.resource.data.authorName == request.auth.token.name
+        && request.resource.data.authorName.size() > 0
+        && request.resource.data.authorName.size() <= 100
+        && request.resource.data.body is string
+        && request.resource.data.body.size() >= 1
+        && request.resource.data.body.size() <= 2000
+        && request.resource.data.createdAt == request.time
+        && (
+          request.resource.data.parentId == null
+          || (
+            request.resource.data.parentId is string
+            && request.resource.data.parentId.size() <= 128
+            && exists(/databases/$(database)/documents/blogPosts/$(postId)/comments/$(request.resource.data.parentId))
+          )
+        );
+
+      // Only project administrators can edit/delete comments in Firebase Console.
+      allow update, delete: if false;
+    }
+  }
+}
