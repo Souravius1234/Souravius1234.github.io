@@ -36,6 +36,26 @@
       padding-top: 0.7rem;
       align-items: center;
     }
+    /* ASTROMAT: a dedicated visual header above the project details. */
+    .projects-page .astromat-card .project-logo-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 116px;
+      padding: 0.45rem 0.5rem;
+      margin-bottom: 0.4rem;
+      border-radius: 0.7rem;
+      background: rgba(3, 10, 22, 0.48);
+    }
+    .projects-page .astromat-card .project-logo-panel img {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      max-height: 130px;
+      object-fit: contain;
+    }
     /* Match the neutral outlined action buttons used on the Research page. */
     .projects-page .button-row .button,
     .projects-page .button-row .button.primary {
@@ -103,9 +123,12 @@
           </div>
         </article>
 
-        <article class="glass-card">
+        <article class="glass-card astromat-card">
+          <div class="project-logo-panel">
+            <img src="images/projects/astromat-logo.svg" alt="ASTROMAT trajectory logo" loading="lazy">
+          </div>
           <h2>ASTROMAT — Astrodynamics Toolkit</h2>
-          <p>Interplanetary mission design tools for Lambert transfers, planetary ephemerides, gravity assists, and low-thrust trajectories.</p>
+          <p>MATLAB toolkit for interplanetary mission design, combining SPICE ephemerides, Lambert targeting, patched-conic gravity assists, deep-space maneuvers, and low-thrust trajectory optimization.</p>
           <div class="tag-list">
             <span class="tag">Mission analysis</span>
             <span class="tag">MATLAB</span>
