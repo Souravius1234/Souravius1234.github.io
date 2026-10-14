@@ -30,6 +30,7 @@ class SiteHeader extends HTMLElement {
         <div class="site-nav-shell">
           <a class="site-logo" href="${joinPath(root, 'index.html')}" aria-label="Sourav Ghosh home">
             <img src="${joinPath(root, 'images/Yin_and_Yang_symbol.svg')}" alt="Yin-Yang logo">
+            <span class="site-brand-name">Sourav Ghosh</span>
           </a>
           <nav class="site-nav" aria-label="Primary navigation">${navLinks}</nav>
           <button class="mobile-menu-button" type="button" aria-expanded="false" aria-controls="mobile-navigation">Menu</button>
