@@ -48,7 +48,7 @@
       border-radius: 0.7rem;
       background: rgba(3, 10, 22, 0.48);
     }
-    .projects-page .astromat-card .project-logo-panel img {
+    .projects-page .astromat-card .project-logo-panel picture {\n      display: block;\n      width: 100%;\n      max-width: 420px;\n    }\n    .projects-page .astromat-card .project-logo-panel img {
       display: block;
       width: 100%;
       max-width: 420px;
@@ -125,7 +125,7 @@
 
         <article class="glass-card astromat-card">
           <div class="project-logo-panel">
-            <img src="images/projects/astromat-logo.svg" alt="ASTROMAT trajectory logo" loading="lazy">
+            <picture><source srcset="images/projects/astromat-logo.png" type="image/png"><img src="images/projects/astromat-logo.svg" alt="ASTROMAT trajectory logo" loading="lazy"></picture>
           </div>
           <h2>ASTROMAT — Astrodynamics Toolkit</h2>
           <p>MATLAB toolkit for interplanetary mission design, combining SPICE ephemerides, Lambert targeting, patched-conic gravity assists, deep-space maneuvers, and low-thrust trajectory optimization.</p>
