@@ -36,6 +36,25 @@
       padding-top: 0.7rem;
       align-items: center;
     }
+    /* Match the neutral outlined action buttons used on the Research page. */
+    .projects-page .button-row .button,
+    .projects-page .button-row .button.primary {
+      min-height: 46px;
+      padding: 0.6rem 1.15rem;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 999px;
+      background: transparent;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.5;
+      box-shadow: none;
+    }
+    .projects-page .button-row .button:hover,
+    .projects-page .button-row .button.primary:hover {
+      background: rgba(255, 255, 255, 0.10);
+      border-color: #fff;
+      color: #fff;
+    }
     @media (max-width: 760px) {
       .projects-page .card-grid > .glass-card { min-height: 0; }
     }
