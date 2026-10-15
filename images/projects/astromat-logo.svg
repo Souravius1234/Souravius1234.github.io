@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" role="img" aria-labelledby="title">
+<title id="title">ASTROMAT orbital trajectory logo</title>
+<defs>
+<linearGradient id="blue" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#37d5f8"/><stop offset=".55" stop-color="#087ed9"/><stop offset="1" stop-color="#164b87"/></linearGradient>
+<linearGradient id="orange" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#f84f20"/><stop offset="1" stop-color="#ffae34"/></linearGradient>
+<radialGradient id="gold" cx=".35" cy=".3" r=".72"><stop stop-color="#ffe88a"/><stop offset=".52" stop-color="#ffac21"/><stop offset="1" stop-color="#e66a05"/></radialGradient>
+</defs>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M48 204 C12 173 94 114 213 107 C328 99 312 171 245 200 C179 237 67 249 48 204 Z" stroke="url(#blue)" stroke-width="4.3"/>
+<path d="M71 211 C48 178 123 143 188 138 C252 133 228 187 169 211 C106 235 76 224 71 211 Z" stroke="#43d8f4" stroke-width="3.4"/>
+<path d="M130 223 C218 210 304 160 290 111 C278 78 252 74 179 81" stroke="#29669f" stroke-width="4.2"/>
+<path d="M180 81 C231 57 312 32 390 29" stroke="url(#orange)" stroke-width="3.3"/>
+</g>
+<g fill="url(#gold)">
+<circle cx="150" cy="186" r="14"/>
+<circle cx="109" cy="227" r="7"/>
+<circle cx="232" cy="174" r="7"/>
+<circle cx="217" cy="103" r="7"/>
+</g>
+<text x="335" y="173" fill="#f7f9ff" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="66" letter-spacing="10">ASTROMAT</text>
+</svg>

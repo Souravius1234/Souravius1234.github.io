@@ -54,6 +54,22 @@
             -webkit-backdrop-filter: blur(8px);
             transition: background-color 0.3s ease;
         }
+        .home-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            color: #f0f0f0;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+        .home-brand img { width: 42px; height: 42px; object-fit: contain; }
+        @media (max-width: 390px) {
+            .home-brand { gap: 0.5rem; font-size: 0.94rem; }
+        }
         /* Style for the logo */
         .logo-style {
             filter: invert(1) brightness(1.5); /* Makes the dark logo white and bright */
@@ -336,8 +352,9 @@
     <header class="site-header">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <!-- Logo added here, replacing the text -->
-            <a href="#">
-                <img src="images/Yin_and_Yang_symbol.svg" alt="Yin-Yang logo" class="h-20 w-20">
+            <a href="index.html" class="home-brand" aria-label="Sourav Ghosh home">
+                <img src="images/Yin_and_Yang_symbol.svg" alt="Yin-Yang logo">
+                <span>Sourav Ghosh</span>
             </a>
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-6">

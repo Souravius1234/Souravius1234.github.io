@@ -10,35 +10,174 @@
   <link rel="stylesheet" href="assets/css/site.css">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js"}}</script>
   <script type="module" src="assets/js/site.js"></script>
+  <style>
+    /* Match the clear, transparent glass used elsewhere on the site. */
+    .projects-page .card-grid > .glass-card {
+      background: rgba(255, 255, 255, 0.015);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    .projects-page .card-grid > .glass-card:hover,
+    .projects-page .card-grid > .glass-card:focus-within {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    /* Project cards: equal-sized rows, consistent interior spacing, bottom-aligned metadata. */
+    .projects-page .card-grid { align-items: stretch; }
+    .projects-page .card-grid > .glass-card {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 225px;
+      height: 100%;
+      gap: 0.6rem;
+    }
+    .projects-page .card-grid > .glass-card > h2 {
+      margin: 0;
+      line-height: 1.4;
+    }
+    .projects-page .card-grid > .glass-card > p {
+      margin: 0;
+      flex: 1 1 auto;
+      line-height: 1.6;
+    }
+    .projects-page .card-grid > .glass-card > .tag-list,
+    .projects-page .card-grid > .glass-card > .button-row {
+      margin-top: auto;
+      padding-top: 0.7rem;
+      align-items: center;
+    }
+    /* ASTROMAT: a dedicated visual header above the project details. */
+    .projects-page .astromat-card .project-logo-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 116px;
+      padding: 0.45rem 0.5rem;
+      margin-bottom: 0.4rem;
+      border-radius: 0.7rem;
+      background: transparent;
+    }
+    .projects-page .astromat-card .project-logo-panel picture {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+    }
+    .projects-page .astromat-card .project-logo-panel img {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      max-height: 130px;
+      object-fit: contain;
+    }
+    /* Match the neutral outlined action buttons used on the Research page. */
+    .projects-page .button-row .button,
+    .projects-page .button-row .button.primary {
+      min-height: 46px;
+      padding: 0.6rem 1.15rem;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 999px;
+      background: transparent;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.5;
+      box-shadow: none;
+    }
+    .projects-page .button-row .button:hover,
+    .projects-page .button-row .button.primary:hover {
+      background: rgba(255, 255, 255, 0.10);
+      border-color: #fff;
+      color: #fff;
+    }
+    @media (max-width: 760px) {
+      .projects-page .card-grid > .glass-card { min-height: 0; }
+    }
+  </style>
 </head>
 <body>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
   <site-header root="." current="projects"></site-header>
 
-  <main class="page-shell">
+  <main class="page-shell projects-page">
     <section class="page-hero">
       <h1>Projects</h1>
-      <p>Selected aerospace design, flight systems, embedded hardware, and engineering competition work.</p>
+      <p>Selected software, hardware and miscellaneous projects. All logos are designed by me (when I was bored).</p>
     </section>
 
-    <section class="section-container">
+    <section class="section-container" aria-labelledby="software-projects">
+      <h2 id="software-projects" class="text-2xl font-medium mb-6">Software</h2>
       <div class="card-grid">
-        <article class="glass-card">
-          <h2>IN-SPACe National CANSAT Competition 2022–24</h2>
-          <p>Design and integration work for a student CANSAT system, culminating in the national finals in Ahmedabad in April 2024.</p>
-          <div class="button-row">
-            <a class="button primary" href="projects/cansat.html">Read more</a>
+        <article class="glass-card astromat-card">
+          <div class="project-logo-panel">
+            <img src="projects/softwares/olap/Luminous OLAP Optical Logo.png" alt="OLAP logo" loading="lazy">
+          </div>
+          <h2>OLAP — Optical Link Analysis Platform</h2>
+          <p>Optical communication terminal simulation covering link performance, acquisition, pointing and tracking, and receiver modeling.</p>
+          <div class="tag-list">
+            <span class="tag">Optical communications</span>
+            <span class="tag">MATLAB</span>
+            <span class="tag">Private repository</span>
           </div>
         </article>
 
-        <article class="glass-card">
-          <h2>SAEIndia Aerothon 2023</h2>
-          <p>Fixed-wing unmanned aircraft design and technical presentation work for SAEIndia Aerothon 2023.</p>
-          <div class="button-row">
-            <a class="button primary" href="projects/aerothon.html">Read more</a>
+        <article class="glass-card astromat-card">
+          <div class="project-logo-panel">
+            <img src="projects/softwares/echo/echo_range_doppler_concept.svg" alt="ECHO logo" loading="lazy">
+          </div>
+          <h2>ECHO — Radar Observation Simulator</h2>
+          <p>Physics-based radar simulation of CW and LFM observations, including detection, range estimation, and Doppler processing.</p>
+          <div class="tag-list">
+            <span class="tag">Radar</span>
+            <span class="tag">MATLAB</span>
+            <span class="tag">Private repository</span>
           </div>
         </article>
 
+        <article class="glass-card astromat-card">
+          <div class="project-logo-panel">
+            <img src="projects/softwares/clap/clap-logo.png" alt="CLAP logo" loading="lazy">
+          </div>
+          <h2>CLAP — CisLunar Astronomical Photometry Simulator</h2>
+          <p>Optical observation simulation for cislunar space situational awareness, including photometry, starfields, and detection.</p>
+          <div class="tag-list">
+            <span class="tag">Optical SSA</span>
+            <span class="tag">MATLAB</span>
+            <span class="tag">Private repository</span>
+          </div>
+        </article>
+
+        <article class="glass-card astromat-card">
+          <div class="project-logo-panel">
+            <img src="projects/softwares/astromat/ASTROMAT Orbital Tech Logo.png" alt="ASTROMAT trajectory logo" loading="lazy">
+          </div>
+          <h2>ASTROMAT — Astrodynamics MATLAB Toolkit</h2>
+          <p>A MATLAB toolkit for interplanetary mission design, combining SPICE ephemerides, Lambert targeting, patched-conic gravity assists, deep-space maneuvers, and low-thrust trajectory optimization.</p>
+          <div class="tag-list">
+            <span class="tag">Mission analysis</span>
+            <span class="tag">MATLAB</span>
+            <span class="tag">Private repository</span>
+          </div>
+        </article>
+
+        <article class="glass-card astromat-card">
+          <div class="project-logo-panel">
+            <img src="projects/softwares/cr3bp/Orbital Dynamics Logo Banner.png" alt="CR3BP trajectory logo" loading="lazy">
+          </div>
+          <h2>CR3BP — Three-Body Dynamics Library</h2>
+          <p>MATLAB library for three-body orbit propagation, periodic orbit construction, differential correction, manifolds, and transfers.</p>
+          <div class="tag-list">
+            <span class="tag">Astrodynamics</span>
+            <span class="tag">MATLAB</span>
+            <span class="tag">Private repository</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-container" aria-labelledby="hardware-projects">
+      <h2 id="hardware-projects" class="text-2xl font-medium mb-6">Hardware</h2>
+      <div class="card-grid">
         <article class="glass-card">
           <h2>Embedded Space Systems</h2>
           <p>Ongoing work involving optical payload electronics, FPGA prototyping, onboard processing, and spacecraft sensor integration.</p>
@@ -50,12 +189,23 @@
         </article>
 
         <article class="glass-card">
-          <h2>Mission Analysis Software</h2>
-          <p>Development of software tools for multibody astrodynamics, interplanetary mission analysis, and trajectory optimization.</p>
-          <div class="tag-list">
-            <span class="tag">MATLAB</span>
-            <span class="tag">Python</span>
-            <span class="tag">CR3BP</span>
+          <h2>IN-SPACe National CANSAT Competition 2022–24</h2>
+          <p>Design and integration work for a student CANSAT system, culminating in the national finals in Ahmedabad in April 2024.</p>
+          <div class="button-row">
+            <a class="button primary" href="projects/cansat/cansat.html">Read more</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-container" aria-labelledby="miscellaneous-projects">
+      <h2 id="miscellaneous-projects" class="text-2xl font-medium mb-6">Miscellaneous</h2>
+      <div class="card-grid">
+        <article class="glass-card">
+          <h2>SAEIndia Aerothon 2023</h2>
+          <p>Fixed-wing unmanned aircraft design and technical presentation work for SAEIndia Aerothon 2023.</p>
+          <div class="button-row">
+            <a class="button primary" href="projects/aerothon/aerothon.html">Read more</a>
           </div>
         </article>
       </div>
