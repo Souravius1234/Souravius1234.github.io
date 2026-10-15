@@ -11,6 +11,16 @@
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js"}}</script>
   <script type="module" src="assets/js/site.js"></script>
   <style>
+    /* Match the clear, transparent glass used elsewhere on the site. */
+    .projects-page .card-grid > .glass-card {
+      background: rgba(255, 255, 255, 0.015);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    .projects-page .card-grid > .glass-card:hover,
+    .projects-page .card-grid > .glass-card:focus-within {
+      background: rgba(255, 255, 255, 0.06);
+    }
     /* Project cards: equal-sized rows, consistent interior spacing, bottom-aligned metadata. */
     .projects-page .card-grid { align-items: stretch; }
     .projects-page .card-grid > .glass-card {
@@ -46,9 +56,14 @@
       padding: 0.45rem 0.5rem;
       margin-bottom: 0.4rem;
       border-radius: 0.7rem;
-      background: rgba(3, 10, 22, 0.48);
+      background: transparent;
     }
-    .projects-page .astromat-card .project-logo-panel picture {\n      display: block;\n      width: 100%;\n      max-width: 420px;\n    }\n    .projects-page .astromat-card .project-logo-panel img {
+    .projects-page .astromat-card .project-logo-panel picture {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+    }
+    .projects-page .astromat-card .project-logo-panel img {
       display: block;
       width: 100%;
       max-width: 420px;
