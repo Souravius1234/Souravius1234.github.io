@@ -1,14 +1,12 @@
 /**
- * Site-wide visitor counter (GoatCounter).
+ * Site-wide visitor counter.
  *
- * One-time activation:
- * 1. Create a GoatCounter site for https://souravius1234.github.io/
- * 2. Replace the empty code below with your GoatCounter subdomain code.
- * 3. In GoatCounter Site settings, enable "Allow adding visitor counts on your website".
- *
- * This intentionally does nothing until configured; it never displays a fake count.
+ * Tracking remains GoatCounter (and respects visitors' ad/tracker blocking).
+ * Display uses a same-origin JSON snapshot refreshed by GitHub Actions.
+ * A blocked tracker does not prevent the published total from being displayed.
  */
 const GOATCOUNTER_CODE = 'souravius1234';
+const COUNT_SNAPSHOT_URL = '/data/visitor-count.json';
 
 let initialized = false;
 
@@ -17,28 +15,27 @@ export function initVisitorCounter() {
   if (location.protocol !== 'https:' || location.hostname !== 'souravius1234.github.io') return;
   initialized = true;
 
-  const base = `https://${GOATCOUNTER_CODE}.goatcounter.com`;
-
-  // Tracking covers every HTML page loading this module, not just the homepage.
+  // Tracking is optional: ad blockers may prevent it, and that choice is respected.
   const tracking = document.createElement('script');
   tracking.async = true;
   tracking.src = 'https://gc.zgo.at/count.js';
-  tracking.dataset.goatcounter = `${base}/count`;
+  tracking.dataset.goatcounter = `https://${GOATCOUNTER_CODE}.goatcounter.com/count`;
   document.head.appendChild(tracking);
 
-  // The TOTAL endpoint returns a site-wide count across all tracked paths.
   const counters = document.querySelectorAll('[data-visit-counter]');
   if (!counters.length) return;
 
-  fetch(`${base}/counter/TOTAL.json`, { mode: 'cors' })
+  // Same-origin file: does not make any browser-side analytics API request.
+  fetch(COUNT_SNAPSHOT_URL, { cache: 'no-cache' })
     .then((response) => {
-      if (!response.ok) throw new Error(`GoatCounter: HTTP ${response.status}`);
+      if (!response.ok) throw new Error(`Visitor count snapshot: HTTP ${response.status}`);
       return response.json();
     })
     .then((data) => {
       if (typeof data.count !== 'string' && typeof data.count !== 'number') return;
       const count = String(data.count);
-      if (!/^[0-9][0-9, .]*$/.test(count)) return;
+      if (!/^[0-9][0-9,]*$/.test(count)) return;
+
       counters.forEach((counter) => {
         const value = counter.querySelector('[data-visit-count]');
         if (!value) return;
@@ -47,6 +44,6 @@ export function initVisitorCounter() {
       });
     })
     .catch(() => {
-      // Keep the counter hidden if public counts aren't enabled or the service is unavailable.
+      // Do not show a made-up count if the published snapshot is unavailable.
     });
 }
