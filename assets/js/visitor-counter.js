@@ -8,7 +8,7 @@
  *
  * This intentionally does nothing until configured; it never displays a fake count.
  */
-const GOATCOUNTER_CODE = '';
+const GOATCOUNTER_CODE = 'souravius1234';
 
 let initialized = false;
 
