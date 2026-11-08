@@ -1,3 +1,5 @@
+import { initVisitorCounter } from './visitor-counter.js';
+
 const normalizeRoot = (value) => {
   if (!value || value === '.') return '.';
   return value.replace(/\/$/, '');
@@ -58,6 +60,11 @@ class SiteFooter extends HTMLElement {
           <a href="https://www.linkedin.com/in/sourav-ghosh-065a851a5/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           <a href="https://www.instagram.com/souravius234/" target="_blank" rel="noopener noreferrer">Instagram</a>
         </div>
+        <div class="visitor-count" data-visit-counter hidden aria-label="Total site visits">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>Total visits</span>
+          <span class="visitor-count-number" data-visit-count></span>
+        </div>
         <div>&copy; ${year} Sourav Ghosh. Inspired by the Cosmos.</div>
       </footer>`;
   }
@@ -89,4 +96,11 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', revealSections, { once: true });
 } else {
   revealSections();
+}
+
+// Run after page markup and shared footer elements have been attached.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initVisitorCounter, { once: true });
+} else {
+  initVisitorCounter();
 }
