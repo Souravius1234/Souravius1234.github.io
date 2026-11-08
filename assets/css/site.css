@@ -427,3 +427,34 @@ textarea:focus {
     transform: none;
   }
 }
+
+/* Minimal site-wide visitor counter; hidden until GoatCounter returns a real value. */
+.visitor-count:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 0.5rem auto 1rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: #cbd5e1;
+  font: 300 0.8rem/1.4 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: 0.01em;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.visitor-count svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  flex: none;
+}
+.visitor-count-number {
+  font-variant-numeric: tabular-nums;
+  color: #f4f7fb;
+  font-weight: 500;
+}
