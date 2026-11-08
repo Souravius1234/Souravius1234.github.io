@@ -342,7 +342,19 @@
         }
 
     </style>
-  <link rel="stylesheet" href="assets/css/site.css">
+  <style>
+    /* Homepage visitor counter: scoped to avoid changing existing homepage styles. */
+    .visitor-count:not([hidden]) {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: .45rem; margin: 1rem auto .25rem; padding: .4rem .8rem;
+      border: 1px solid rgba(255,255,255,.12); border-radius: 999px;
+      background: rgba(255,255,255,.035); color: #cbd5e1;
+      font: 300 .8rem/1.4 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .visitor-count svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+    .visitor-count-number { color: #f4f7fb; font-weight: 500; font-variant-numeric: tabular-nums; }
+  </style>
 </head>
 <body class="bg-black">
     <!-- This canvas is where the 3D animation will be rendered. -->
