@@ -36,10 +36,22 @@ export function initVisitorCounter() {
       const count = String(data.count);
       if (!/^[0-9][0-9,]*$/.test(count)) return;
 
+      const jstDate = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).format(new Date());
+      const today = data.date === jstDate && /^[0-9][0-9,]*$/.test(String(data.today))
+        ? String(data.today) : null;
+
       counters.forEach((counter) => {
         const value = counter.querySelector('[data-visit-count]');
         if (!value) return;
         value.textContent = count;
+        const daily = counter.querySelector('[data-visit-today]');
+        const dailyLabel = counter.querySelector('[data-visit-today-label]');
+        if (daily && dailyLabel) {
+          dailyLabel.hidden = today === null;
+          if (today !== null) daily.textContent = today;
+        }
         counter.hidden = false;
       });
     })
